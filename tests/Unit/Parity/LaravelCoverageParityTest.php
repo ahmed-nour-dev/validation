@@ -10,7 +10,7 @@ use Vi\Validation\Tests\Unit\Parity\Support\ParityTestCase;
 /**
  * Covers RuleId: contains, hex_color, in_array, max_digits, min_digits, present_if,
  * present_unless, present_with, present_with_all, prohibited_if_accepted,
- * prohibited_if_declined, required_if_declined - the Laravel rules vi/validation didn't
+ * prohibited_if_declined, required_if_declined - the Laravel rules ahmednour/validation didn't
  * implement at all - plus Laravel's dependent-value matching for every *_if / *_unless rule.
  *
  * Rules that the installed Laravel version doesn't have yet are skipped for it.

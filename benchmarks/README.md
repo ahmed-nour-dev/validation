@@ -1,6 +1,6 @@
 # Benchmarks
 
-A reproducible benchmark suite for vi/validation, runnable from a clean checkout:
+A reproducible benchmark suite for ahmednour/validation, runnable from a clean checkout:
 
 ```bash
 composer install
@@ -59,7 +59,7 @@ Options for `run.php`:
 
 CI can't compare absolute timings: runners differ too much. `regression.php` therefore checks **ratios measured in the same process**, taking the best of 3 repetitions at 2,000 rows, against [`baseline.json`](baseline.json):
 
-- each vi/validation path's speedup over Laravel's validator (`min_speedup_vs_laravel`);
+- each ahmednour/validation path's speedup over Laravel's validator (`min_speedup_vs_laravel`);
 - native over engine, for natively compilable scenarios (`min_native_over_engine`);
 - peak memory added while validating (`max_peak_memory_bytes`), which catches accidental per-row retention.
 

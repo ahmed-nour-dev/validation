@@ -23,7 +23,7 @@ use Vi\Validation\SchemaValidator;
 
 /**
  * Shared harness for running the same rules/data through Laravel's real validator and
- * vi/validation, and comparing normalized outcomes (pass/fail + which fields failed).
+ * ahmednour/validation, and comparing normalized outcomes (pass/fail + which fields failed).
  *
  * "Normalized" deliberately does not mean byte-identical error message text: localization
  * and message wording are not part of this parity contract, only which fields fail and why
@@ -157,7 +157,7 @@ abstract class ParityTestCase extends TestCase
     }
 
     /**
-     * Assert that Laravel and vi/validation agree on pass/fail and on which fields failed
+     * Assert that Laravel and ahmednour/validation agree on pass/fail and on which fields failed
      * for the given rules/data, and (when the schema is native-compilable) that the native
      * path agrees with the engine path too.
      *
@@ -197,9 +197,9 @@ abstract class ParityTestCase extends TestCase
     }
 
     /**
-     * For the rare rule where Laravel and vi/validation use structurally different rule
+     * For the rare rule where Laravel and ahmednour/validation use structurally different rule
      * grammars to express the same intent (e.g. Laravel's wildcard `tags.*` => `distinct`
-     * vs. vi/validation's whole-array `tags` => `distinct`, since wildcards aren't
+     * vs. ahmednour/validation's whole-array `tags` => `distinct`, since wildcards aren't
      * implemented — see `_attribute_addressing` in the compatibility matrix), asserts only
      * that the two differently-shaped rule sets agree on overall pass/fail.
      *

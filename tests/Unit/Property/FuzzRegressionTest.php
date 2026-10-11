@@ -63,7 +63,7 @@ final class FuzzRegressionTest extends ParityTestCase
                 try {
                     $this->laravel(['a' => $value], ['a' => $rule])->passes();
                 } catch (\ValueError) {
-                    // Older Laravel 10 releases throw here themselves; vi/validation must still
+                    // Older Laravel 10 releases throw here themselves; ahmednour/validation must still
                     // reject the value rather than throw.
                     $result = (new \Vi\Validation\SchemaValidator(\Vi\Validation\Validator::fromRules(['a' => $rule])))->validate(['a' => $value]);
                     $this->assertFalse($result->isValid(), "{$rule} " . json_encode($value));
@@ -80,7 +80,7 @@ final class FuzzRegressionTest extends ParityTestCase
     public function testDistinctWithNestedArrays(): void
     {
         // Note: on a non-wildcard field Laravel's `distinct` never fails (it compares wildcard
-        // siblings), while vi/validation checks the array's own elements - a documented
+        // siblings), while ahmednour/validation checks the array's own elements - a documented
         // difference. What regressed was the crash, so assert behaviour directly.
         $validator = new \Vi\Validation\SchemaValidator(\Vi\Validation\Validator::fromRules(['a' => 'distinct']));
 

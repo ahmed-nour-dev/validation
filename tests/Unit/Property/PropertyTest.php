@@ -316,7 +316,7 @@ final class PropertyTest extends TestCase
             } catch (\Throwable $e) {
                 if ($laravelThrew === null) {
                     $this->fail(sprintf(
-                        "vi/validation threw %s (%s) where Laravel did not\nrule=%s value=%s\n%s",
+                        "ahmednour/validation threw %s (%s) where Laravel did not\nrule=%s value=%s\n%s",
                         get_class($e),
                         $e->getMessage(),
                         $rule,

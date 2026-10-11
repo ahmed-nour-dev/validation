@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-`vi/validation` is a high-performance, standalone PHP validation library (PHP >= 8.1) with an optional Laravel
+`ahmednour/validation` is a high-performance, standalone PHP validation library (PHP >= 8.1) with an optional Laravel
 integration layer. It reimplements most of Laravel's validation rule set behind a compile-once/execute-many
 engine, aiming for large speedups over `illuminate/validation` on bulk/streaming datasets while staying
 Laravel-rule-string compatible.
@@ -31,7 +31,7 @@ top level (`benchmark.php`, `check_parity.php`, `correctness_verify.php`, `fuzz_
 `performance_repro.php`, etc.) are standalone dev scripts run directly with `php tests/<script>.php`, not
 part of the PHPUnit suite — use them when investigating performance regressions or Laravel-parity mismatches.
 
-CI (`.github/workflows/ci.yml`) runs the matrix PHP 8.1–8.3 × Laravel 10/11, then PHPStan followed by PHPUnit
+CI (`.github/workflows/ci.yml`) runs the matrix PHP 8.1–8.4 × Laravel 10/11/12/13 (see the `exclude` rows for unsupported pairs), then PHPStan followed by PHPUnit
 with coverage. Match that before assuming a change is safe.
 
 ## Architecture
@@ -84,7 +84,7 @@ This is the core design and the thing to understand before touching anything:
 - `FastValidatorFactory` / `FastValidatorWrapper` / `Facades\FastValidator` provide a drop-in
   `Validator::make()`-compatible API (`FastValidator::make($data, $rules)->fails()/->validated()`, plus
   `->stream()`).
-- `LaravelValidatorAdapter` implements Laravel's `Validator` contract so `vi/validation` can transparently
+- `LaravelValidatorAdapter` implements Laravel's `Validator` contract so `ahmednour/validation` can transparently
   replace `illuminate/validation` in **override mode** (`config/fast-validation.php` → `mode: 'override'`) vs.
   **parallel mode** (opt-in via the `FastValidator` facade, the default).
 - `FastValidationServiceProvider` wires config, and `Octane\OctaneValidatorProvider` hooks Octane's

@@ -30,7 +30,7 @@ final class LaravelValidatorAdapter implements LaravelValidatorFactory
         try {
             return $this->fastFactory->make($data, $rules, $messages, $customAttributes);
         } catch (UnsupportedRuleException) {
-            // A rule vi/validation doesn't implement (e.g. one registered with
+            // A rule ahmednour/validation doesn't implement (e.g. one registered with
             // Validator::extend()): let Laravel validate the whole rule set rather than
             // silently skipping that rule.
             $data = is_array($data) ? $data : iterator_to_array($data);

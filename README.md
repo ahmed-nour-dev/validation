@@ -1,17 +1,17 @@
-# vi/validation 🚀
+# ahmednour/validation 🚀
 
 > **The High-Performance PHP Validation Library**
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/vi/validation.svg?style=flat-square)](https://packagist.org/packages/vi/validation)
-[![Total Downloads](https://img.shields.io/packagist/dt/vi/validation.svg?style=flat-square)](https://packagist.org/packages/vi/validation)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/ahmednour/validation.svg?style=flat-square)](https://packagist.org/packages/ahmednour/validation)
+[![Total Downloads](https://img.shields.io/packagist/dt/ahmednour/validation.svg?style=flat-square)](https://packagist.org/packages/ahmednour/validation)
 
-**vi/validation** is a blazing fast, memory-efficient validation library designed for high-performance applications. Whether you are processing large datasets, building high-frequency APIs, or running long-lived processes (Octane, Swoole), this library handles it with minimal overhead.
+**ahmednour/validation** is a blazing fast, memory-efficient validation library designed for high-performance applications. Whether you are processing large datasets, building high-frequency APIs, or running long-lived processes (Octane, Swoole), this library handles it with minimal overhead.
 
 ---
 
 ## ⚡ Performance at a Glance
 
-On realistic import/API datasets, **vi/validation** runs **17–23× faster than Laravel's validator** through the drop-in `FastValidator::make()` API. It is **30–43× faster** with a compiled schema reused across rows, and **up to 94× faster** once the schema is compiled to native PHP. Memory stays flat per row.
+On realistic import/API datasets, **ahmednour/validation** runs **17–23× faster than Laravel's validator** through the drop-in `FastValidator::make()` API. It is **30–43× faster** with a compiled schema reused across rows, and **up to 94× faster** once the schema is compiled to native PHP. Memory stays flat per row.
 
 | Dataset | Rows | Laravel Validator | `FastValidator::make()` per row | Compiled schema (engine) | Native compiled |
 | :--- | ---: | ---: | ---: | ---: | ---: |
@@ -23,7 +23,7 @@ On realistic import/API datasets, **vi/validation** runs **17–23× faster than
 
 ---
 
-## 🌟 Why vi/validation?
+## 🌟 Why ahmednour/validation?
 
 - **Compile Once, Validate Many**: Schemas are compiled into optimized execution plans, eliminating repetitive parsing overhead.
 - **Native Code Generation**: Automatically generates raw PHP code for your validation rules, bypassing reflection and dynamic calls entirely.
@@ -58,7 +58,7 @@ On realistic import/API datasets, **vi/validation** runs **17–23× faster than
 ## 📦 Installation
 
 ```bash
-composer require vi/validation
+composer require ahmednour/validation
 ```
 
 ---
@@ -71,18 +71,19 @@ in `tests/Unit/Parity/` + `LaravelRuleParserTest`, and the native-compilation te
 `NativeCompilerTest` + `tests/Unit/Compilation/`) plus PHPStan level 8. A combination not listed
 here is **not tested and not supported** — it may work, but breakage in it isn't a bug.
 
-| PHP \ Laravel | 10.x | 11.x |
-| :---: | :---: | :---: |
-| **8.1** | ✅ | ⛔ requires PHP >= 8.2 |
-| **8.2** | ✅ | ✅ |
-| **8.3** | ✅ | ✅ |
+| PHP \ Laravel | 10.x | 11.x | 12.x | 13.x |
+| :---: | :---: | :---: | :---: | :---: |
+| **8.1** | ✅ | ⛔ requires PHP >= 8.2 | ⛔ requires PHP >= 8.2 | ⛔ requires PHP >= 8.3 |
+| **8.2** | ✅ | ✅ | ✅ | ⛔ requires PHP >= 8.3 |
+| **8.3** | ✅ | ✅ | ✅ | ✅ |
+| **8.4** | ➖ not tested | ✅ | ✅ | ✅ |
 
 - CI additionally runs an `illuminate/validation:^10.0` install with `composer update
   --prefer-lowest` on PHP 8.1 to catch code that only happens to work against a newer
   dependency than `composer.json` actually declares.
-- vi/validation works standalone (no Laravel app) on any PHP version in the table above —
+- ahmednour/validation works standalone (no Laravel app) on any PHP version in the table above —
   see [Standalone PHP](#1-standalone-php).
-- PHP 8.4+ and Laravel 12+ are not yet in the matrix. Adding a new PHP or Laravel version is a
+- PHP 8.5+ and Laravel 14+ are not yet in the matrix. Adding a new PHP or Laravel version is a
   one-line addition to the `matrix:` block in `.github/workflows/ci.yml` (plus an `exclude:` row
   if the new Laravel major raises its minimum PHP version) — no restructuring of the test suite
   is required.
@@ -121,7 +122,7 @@ if ($result->isValid()) {
 
 ### 2. Laravel (Parallel Mode) - *Recommended*
 
-Use `vi/validation` explicitly where you need performance, keeping standard Laravel validation elsewhere.
+Use `ahmednour/validation` explicitly where you need performance, keeping standard Laravel validation elsewhere.
 
 ```php
 use Vi\Validation\Laravel\Facades\FastValidator;
@@ -476,7 +477,7 @@ dependencies and known differences for every rule.
 ### ✅ Parity & Compatibility
 
 `tests/Unit/Parity/` runs the same rule/data cases through Laravel's real validator and
-`vi/validation`, comparing normalized outcomes (pass/fail and which fields failed, not exact
+`ahmednour/validation`, comparing normalized outcomes (pass/fail and which fields failed, not exact
 message text) — this is the safety net that lets us optimize the engine without silently
 drifting from Laravel's semantics. It covers every rule category, both execution paths
 (`ValidatorEngine` and the native-compiled path, compared automatically wherever a schema is
@@ -565,7 +566,7 @@ In Laravel, `FastValidator::make()` accepts the same `$messages` and `$customAtt
 
 ### ⚡ Long-Running Processes (Octane, Swoole, RoadRunner)
 
-For worker-based runtimes where the process stays alive across requests, `vi/validation` avoids re-creating validators on every request:
+For worker-based runtimes where the process stays alive across requests, `ahmednour/validation` avoids re-creating validators on every request:
 
 - **`Vi\Validation\Runtime\ValidatorPool`** — a pool of reusable `StatelessValidator` instances. Enable it with `runtime.pooling` in the config (see below); `OctaneValidatorProvider` wires it into Octane's `WorkerStarting`/`WorkerStopping`/`RequestReceived`/`RequestTerminated` events automatically.
 - **`Vi\Validation\Runtime\Workers\SwooleAdapter`** and **`RoadRunnerAdapter`** — thin adapters for wiring the same lifecycle hooks into Swoole and RoadRunner workers directly.

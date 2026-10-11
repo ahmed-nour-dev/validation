@@ -17,12 +17,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [8.1, 8.2, 8.3]
-        laravel: ['10.*', '11.*']
+        php: [8.1, 8.2, 8.3, 8.4]
+        laravel: ['10.*', '11.*', '12.*', '13.*']
         exclude:
-          # Laravel 11 requires PHP >= 8.2.
+          # Laravel 11 and 12 require PHP >= 8.2; Laravel 13 requires PHP >= 8.3.
           - php: 8.1
             laravel: '11.*'
+          - php: 8.1
+            laravel: '12.*'
+          - php: 8.1
+            laravel: '13.*'
+          - php: 8.2
+            laravel: '13.*'
+          # Laravel 10 predates PHP 8.4 and is not tested on it.
+          - php: 8.4
+            laravel: '10.*'
 
     name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
 
@@ -89,7 +98,7 @@ jobs:
       - name: Run full PHPUnit suite
         run: ./vendor/bin/phpunit --no-coverage
 
-  # Performance regression gate: compares vi/validation against Laravel's validator (and native
+  # Performance regression gate: compares ahmednour/validation against Laravel's validator (and native
   # against the engine) in the same process, so it is robust to runner speed. See benchmarks/README.md.
   performance:
     runs-on: ubuntu-latest

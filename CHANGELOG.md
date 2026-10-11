@@ -7,7 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-10-11
+
+First tagged release. The `[0.1.0] - 2026-02-04` entry that used to live below was never tagged;
+its contents are kept under "Initial development" at the end of this file.
+
+### Changed
+- **Package renamed from `vi/validation` to `ahmednour/validation`** so it can be published on
+  Packagist (the `vi` vendor belongs to someone else). The PHP namespace (`Vi\Validation\`),
+  the service provider and the `FastValidator` facade are unchanged: only the Composer package name
+  differs, so install with `composer require ahmednour/validation`.
+
 ### Added
+- Laravel 12 and 13 support (`illuminate/validation: ^10.0|^11.0|^12.0|^13.0`), and PHP 8.4 in the
+  CI matrix. README compatibility table updated; Laravel 12 requires PHP >= 8.2 and Laravel 13
+  requires PHP >= 8.3.
 - Comprehensive gap analysis and roadmap document.
 - Week 1 foundational tasks (CHANGELOG, LICENSE, CONTRIBUTING).
 - Explicit PHP/Laravel compatibility matrix: CI now runs a `--prefer-lowest` dependency job
@@ -163,7 +177,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `NativeCompiler::generateKey()`; use `ValidatorCompiler::nativeKeyFor()` (#19).
 - `ValidatorCompiler::writeNative($key, $schema)`; use `writeNativeFor($schema)` (#15).
 
-## [0.1.0] - 2026-02-04
+## Initial development (2026-02-04, never tagged)
 
 ### Added
 - High-performance PHP validation engine.

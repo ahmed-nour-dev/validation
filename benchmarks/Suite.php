@@ -23,7 +23,7 @@ use Vi\Validation\Validator;
  * import/API workload; each "path" is one way of validating it:
  *
  * - laravel:  Illuminate\Validation Factory::make() per row (the baseline)
- * - factory:  vi/validation FastValidatorFactory::make() per row (Laravel-style API, per-request cost)
+ * - factory:  ahmednour/validation FastValidatorFactory::make() per row (Laravel-style API, per-request cost)
  * - engine:   one reused SchemaValidator running ValidatorEngine (compile once, validate many)
  * - native:   one reused SchemaValidator running the generated native closure
  *

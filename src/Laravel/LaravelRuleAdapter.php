@@ -16,7 +16,7 @@ use Vi\Validation\Execution\ValidationContext;
 use Vi\Validation\Rules\RuleInterface;
 
 /**
- * Runs a Laravel rule object inside vi/validation:
+ * Runs a Laravel rule object inside ahmednour/validation:
  *
  * - `Illuminate\Contracts\Validation\ValidationRule` (Laravel 10+ `validate($attribute, $value, $fail)`),
  * - `Illuminate\Contracts\Validation\InvokableRule` (`__invoke($attribute, $value, $fail)`),

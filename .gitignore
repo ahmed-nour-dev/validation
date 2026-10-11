@@ -20,3 +20,12 @@ log.txt
 # Per-run benchmark output (the committed reference lives in benchmarks/results/reference.*)
 /benchmarks/results/latest.*
 /benchmarks/results/regression.json
+
+# IDE / tool state and caches
+/.qoder
+/.vscode
+/.phpunit.cache
+/build
+
+# Libraries don't commit a lock file; CI resolves each PHP x Laravel cell itself
+/composer.lock

@@ -2,12 +2,12 @@
 
 <!-- Generated from resources/compatibility-matrix.json by `php tests/generate_rule_matrix.php`. Do not edit by hand. -->
 
-Every rule vi/validation knows about, and every rule the supported Laravel versions define.
-**115 rules: 107 with verified Laravel parity, 20 natively compilable.**
+Every rule ahmednour/validation knows about, and every rule the supported Laravel versions define.
+**120 rules: 107 with verified Laravel parity, 20 natively compilable.**
 
-Parity is verified against the real `illuminate/validation` on Laravel 10.x / 11.x × PHP 8.1 / 8.2 / 8.3 in CI.
+Parity is verified against the real `illuminate/validation` on Laravel 10.x / 11.x / 12.x / 13.x × PHP 8.1 / 8.2 / 8.3 / 8.4 in CI.
 
-- **Engine**: the rule runs in `ValidatorEngine`, which covers every rule vi/validation supports.
+- **Engine**: the rule runs in `ValidatorEngine`, which covers every rule ahmednour/validation supports.
 - **Native**: the rule can be inlined by `NativeCompiler`, i.e. its class implements `NativeCompilableInterface`. A schema runs natively only if *every* rule in it is native. Engine support never implies native support.
 - **Parity**: ✅ pass/fail and failed fields match Laravel (parity-tested); 🟡 matches except for the noted cases; 🔴 intentionally different (pinned by a divergence test); ➖ no Laravel counterpart.
 - **Nested / wildcard**: Dot paths of any depth ('parent.child', 'a.b.c') resolve like Laravel's dot notation on both the engine and native paths, including presence checks for sometimes and conditional rules. Wildcard segments ('items.*.sku') are not implemented: a wildcard field name never resolves against real data, so implicit rules (e.g. required) on it fail unconditionally and non-implicit rules silently no-op. Pinned by tests/Unit/Parity/NestedWildcardParityTest.php via assertDivergence().
@@ -89,9 +89,11 @@ Parity is verified against the real `illuminate/validation` on Laravel 10.x / 11
 | `alpha_dash` | yes | yes | ✅ verified | all | — |  |
 | `alpha_num` | yes | yes | ✅ verified | all | — |  |
 | `ascii` | yes | no | ✅ verified | all | — |  |
+| `base64` | no | no | ⛔ unsupported | 13.x+ | — | Laravel 13 rule not implemented yet; the parser rejects it with UnsupportedRuleException. |
 | `doesnt_end_with` | yes | no | ✅ verified | all | — |  |
 | `doesnt_start_with` | yes | no | ✅ verified | all | — |  |
 | `email` | yes | yes | ✅ verified | all | — |  |
+| `encoding` | no | no | ⛔ unsupported | 12.x+ | — | Laravel 12 rule not implemented yet; the parser rejects it with UnsupportedRuleException. |
 | `ends_with` | yes | no | ✅ verified | all | — |  |
 | `hex_color` | yes | no | ✅ verified | 10.x+ | — |  |
 | `ip` | yes | yes | ✅ verified | all | — |  |
@@ -151,9 +153,12 @@ Parity is verified against the real `illuminate/validation` on Laravel 10.x / 11
 
 | Rule | Engine | Native | Parity | Laravel | Dependencies | Notes |
 | :--- | :---: | :---: | :--- | :--- | :--- | :--- |
+| `array_keys` | no | no | ⛔ unsupported | 13.x+ | — | Laravel 13 rule not implemented yet; the parser rejects it with UnsupportedRuleException. |
 | `contains` | yes | no | ✅ verified | 11.x+ | — |  |
-| `distinct` | yes | no | 🟡 partial | all | — | Laravel's distinct compares wildcard siblings ('tags.*' => 'distinct') and never fails on a plain field; vi/validation (which has no wildcards) checks the array's own elements ('tags' => 'array\|distinct'). Equivalent for the idiomatic uses, compared via assertEquivalentParity() in ArrayParityTest. Strict mode uses ===. |
+| `distinct` | yes | no | 🟡 partial | all | — | Laravel's distinct compares wildcard siblings ('tags.*' => 'distinct') and never fails on a plain field; ahmednour/validation (which has no wildcards) checks the array's own elements ('tags' => 'array\|distinct'). Equivalent for the idiomatic uses, compared via assertEquivalentParity() in ArrayParityTest. Strict mode uses ===. |
+| `doesnt_contain` | no | no | ⛔ unsupported | 12.x+ | — | Laravel 12 rule not implemented yet; the parser rejects it with UnsupportedRuleException. |
 | `in_array` | yes | no | ✅ verified | all | — | Other path may use '*' wildcards (in_array:allowed.*); the value is compared loosely against every matching leaf, like Laravel's Str::is() + in_array(). |
+| `in_array_keys` | no | no | ⛔ unsupported | 12.x+ | — | Laravel 12 rule not implemented yet; the parser rejects it with UnsupportedRuleException. |
 | `required_array_keys` | yes | no | ✅ verified | all | — | Crashed via rule string before issue #5 (RequiredArrayKeysRule takes variadic string ...$keys, but LaravelRuleParser wrongly grouped it with array-taking rules like required_with); fixed. |
 
 ## Files
@@ -164,10 +169,10 @@ Parity is verified against the real `illuminate/validation` on Laravel 10.x / 11
 | `extensions` | yes | no | ✅ verified | all | uploaded files | Two fixes as part of issue #5: (1) LaravelRuleParser previously built this with zero extensions (variadic ctor, silent no-op). (2) ExtensionsRule compared the extension of the file's real temp path ('/tmp/phpXXXXXX', no extension) instead of the uploaded file's original client filename, so it always failed for real uploads; now prefers getClientOriginalExtension() when available, matching Laravel's validateExtensions(). |
 | `file` | yes | no | ✅ verified | all | uploaded files |  |
 | `image` | yes | no | ✅ verified | all | uploaded files |  |
-| `max_file_size` | yes | no | ✅ verified | all | uploaded files | Same as min_file_size: Laravel overloads 'max:N'; vi/validation names it separately. Compared via assertEquivalentParity(). |
+| `max_file_size` | yes | no | ✅ verified | all | uploaded files | Same as min_file_size: Laravel overloads 'max:N'; ahmednour/validation names it separately. Compared via assertEquivalentParity(). |
 | `mimes` | yes | no | ✅ verified | all | uploaded files |  |
 | `mimetypes` | yes | no | ✅ verified | all | uploaded files | LaravelRuleParser previously built this with zero types (MimetypesRule takes variadic string ...$types, but was wrongly grouped with array-taking 'mimes'; silent no-op); fixed as part of issue #5. |
-| `min_file_size` | yes | no | ✅ verified | all | uploaded files | Crashed via rule string before issue #5 (no case in LaravelRuleParser; only max_file_size was handled). Fixed. Different rule name than Laravel, same semantics: Laravel overloads 'min:N' to mean kilobytes when the value is a File instance; vi/validation gives it a distinct name. Compared via assertEquivalentParity() in FileParityTest ('file\|min:N' vs 'file\|min_file_size:N'). |
+| `min_file_size` | yes | no | ✅ verified | all | uploaded files | Crashed via rule string before issue #5 (no case in LaravelRuleParser; only max_file_size was handled). Fixed. Different rule name than Laravel, same semantics: Laravel overloads 'min:N' to mean kilobytes when the value is a File instance; ahmednour/validation gives it a distinct name. Compared via assertEquivalentParity() in FileParityTest ('file\|min:N' vs 'file\|min_file_size:N'). |
 
 ## Database
 
@@ -183,12 +188,12 @@ Parity is verified against the real `illuminate/validation` on Laravel 10.x / 11
 | `current_password` | yes | no | 🟡 partial | all | auth | Backed by Laravel's auth + hasher via FastValidationServiceProvider; guests and a missing hasher fail (fails closed, like Laravel). The optional guard parameter (current_password:api) is ignored: the default guard is always used. |
 | `password` | yes | no | ✅ verified | all | network (uncompromised check only) |  |
 
-## vi/validation extensions
+## ahmednour/validation extensions
 
 | Rule | Engine | Native | Parity | Laravel | Dependencies | Notes |
 | :--- | :---: | :---: | :--- | :--- | :--- | :--- |
-| `country` | yes | no | ➖ n/a | all | — | vi/validation-only extension; Laravel has no built-in 'country' rule to compare against. Tested for internal correctness only, not cross-validated. |
-| `language` | yes | no | ➖ n/a | all | — | vi/validation-only extension; Laravel has no built-in 'language' rule to compare against. Tested for internal correctness only, not cross-validated. |
+| `country` | yes | no | ➖ n/a | all | — | ahmednour/validation-only extension; Laravel has no built-in 'country' rule to compare against. Tested for internal correctness only, not cross-validated. |
+| `language` | yes | no | ➖ n/a | all | — | ahmednour/validation-only extension; Laravel has no built-in 'language' rule to compare against. Tested for internal correctness only, not cross-validated. |
 
 ## Internal
 

@@ -15,7 +15,7 @@ use Vi\Validation\Tests\Unit\Parity\Support\ParityTestCase;
  * UploadedFile::fake() returns Illuminate\Http\Testing\File, which extends
  * Illuminate\Http\UploadedFile -> Symfony\Component\HttpFoundation\File\File -> SplFileInfo.
  * That satisfies both Laravel's isValidFileInstance() (needs a Symfony File) and
- * vi/validation's FileRule/ImageRule (needs an SplFileInfo), so the same object is valid
+ * ahmednour/validation's FileRule/ImageRule (needs an SplFileInfo), so the same object is valid
  * input to both sides.
  */
 #[Group('laravel')]
@@ -40,7 +40,7 @@ class FileParityTest extends ParityTestCase
      * MimeTypes guesser) can't identify it as the claimed type - only Laravel's
      * Illuminate\Http\Testing\File overrides getMimeType()/guessExtension() to trust the
      * declared type without inspecting content. Real content is needed for a genuine
-     * content-sniffing comparison between Laravel and vi/validation.
+     * content-sniffing comparison between Laravel and ahmednour/validation.
      */
     private function realUploadedFile(string $originalName, string $contents, string $mimeType): UploadedFile
     {
@@ -117,12 +117,12 @@ class FileParityTest extends ParityTestCase
     }
 
     /**
-     * Laravel overloads 'min:N'/'max:N' to mean kilobytes for a File value; vi/validation
+     * Laravel overloads 'min:N'/'max:N' to mean kilobytes for a File value; ahmednour/validation
      * gives that a distinct rule name (see compatibility-matrix.json: min_file_size).
      *
      * UploadedFile::fake()->create($name, $kilobytes) reports a fake size without writing
      * real bytes to disk (filesize() on the real path is 0) - fine for Laravel, which reads
-     * the object's own (faked) getSize(), but vi/validation's *FileSizeRule reads the real
+     * the object's own (faked) getSize(), but ahmednour/validation's *FileSizeRule reads the real
      * file's filesize() on disk, so these need genuinely-sized fixtures via realUploadedFile().
      */
     public function testMinFileSizePasses(): void

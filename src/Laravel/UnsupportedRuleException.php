@@ -7,7 +7,7 @@ namespace Vi\Validation\Laravel;
 use InvalidArgumentException;
 
 /**
- * Thrown by LaravelRuleParser for a rule vi/validation doesn't implement: an unknown rule
+ * Thrown by LaravelRuleParser for a rule ahmednour/validation doesn't implement: an unknown rule
  * name (including rules registered only via Laravel's Validator::extend()) or a rule
  * definition of an unsupported type.
  *

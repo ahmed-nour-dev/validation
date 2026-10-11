@@ -1,6 +1,6 @@
 # Native compilation & schema artifacts
 
-This document describes the lifecycle of a validation schema, how vi/validation identifies
+This document describes the lifecycle of a validation schema, how ahmednour/validation identifies
 compiled schemas, and how the generated native PHP artifacts are keyed, stored and secured.
 See the README's "Native compilation compatibility contract" for which rules can be inlined.
 

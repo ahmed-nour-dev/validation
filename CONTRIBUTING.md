@@ -1,6 +1,6 @@
-# Contributing to vi/validation
+# Contributing to ahmednour/validation
 
-First off, thank you for considering contributing to vi/validation! It's people like you who make the open-source community such an amazing place.
+First off, thank you for considering contributing to ahmednour/validation! It's people like you who make the open-source community such an amazing place.
 
 ## Code of Conduct
 
@@ -17,7 +17,7 @@ By participating in this project, you are expected to uphold our Code of Conduct
 ### Suggesting Enhancements
 - Use a clear and descriptive title.
 - Provide a step-by-step description of the suggested enhancement.
-- Explain why this enhancement would be useful to most vi/validation users.
+- Explain why this enhancement would be useful to most ahmednour/validation users.
 
 ### Pull Requests
 - Fill in the pull request template.

@@ -24,6 +24,15 @@ final class DigitsBetweenRule implements RuleInterface
             return null;
         }
 
+        // Non-scalars (arrays, objects) are simply invalid; casting them throws
+        // ("Array to string conversion"), where Laravel 13 returns a validation failure.
+        if (!is_scalar($value)) {
+            return [
+                'rule' => 'digits_between',
+                'params' => ['min' => $this->min, 'max' => $this->max],
+            ];
+        }
+
         $stringValue = (string) $value;
 
         // Check if the value contains only digits

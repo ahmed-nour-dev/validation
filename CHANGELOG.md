@@ -7,7 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-10-11
+
+First tagged release. The `[0.1.0] - 2026-02-04` entry that used to live below was never tagged;
+its contents are kept under "Initial development" at the end of this file.
+
+### Changed
+- **Package renamed from `vi/validation` to `ahmednour/validation`** so it can be published on
+  Packagist (the `vi` vendor belongs to someone else). The PHP namespace (`Vi\Validation\`),
+  the service provider and the `FastValidator` facade are unchanged: only the Composer package name
+  differs, so install with `composer require ahmednour/validation`.
+
 ### Added
+- Laravel 12 and 13 support (`illuminate/validation: ^10.0|^11.0|^12.0|^13.0`), and PHP 8.4 in the
+  CI matrix. README compatibility table updated; Laravel 12 requires PHP >= 8.2 and Laravel 13
+  requires PHP >= 8.3. The rules those releases added (`doesnt_contain`, `encoding`,
+  `in_array_keys`, `array_keys`, `base64`) are not implemented yet and are listed as `unsupported`
+  in the compatibility matrix; the parser rejects them with `UnsupportedRuleException`.
 - Comprehensive gap analysis and roadmap document.
 - Week 1 foundational tasks (CHANGELOG, LICENSE, CONTRIBUTING).
 - Explicit PHP/Laravel compatibility matrix: CI now runs a `--prefer-lowest` dependency job
@@ -80,6 +96,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   The README's performance table is now generated from `benchmarks/results/reference.*` (#9).
 
 ### Fixed
+- `digits` and `digits_between` threw "Array to string conversion" on array values; they now fail
+  validation like Laravel 13 does.
 - All fluent-built schemas shared a single native artifact key (their raw rules array is
   empty), so one schema's native closure could be used for another (#19).
 - `FastValidatorFactory`'s schema cache keyed closures and rule objects by
@@ -163,7 +181,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `NativeCompiler::generateKey()`; use `ValidatorCompiler::nativeKeyFor()` (#19).
 - `ValidatorCompiler::writeNative($key, $schema)`; use `writeNativeFor($schema)` (#15).
 
-## [0.1.0] - 2026-02-04
+## Initial development (2026-02-04, never tagged)
 
 ### Added
 - High-performance PHP validation engine.

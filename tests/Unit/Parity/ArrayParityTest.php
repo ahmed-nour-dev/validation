@@ -23,10 +23,10 @@ class ArrayParityTest extends ParityTestCase
 
     /**
      * Laravel's `distinct` validates one array element at a time via wildcard expansion
-     * (`tags.*` => `distinct`, called once per index against its siblings). vi/validation
+     * (`tags.*` => `distinct`, called once per index against its siblings). ahmednour/validation
      * has no wildcard support (see `_attribute_addressing` in the compatibility matrix) so
      * its DistinctRule instead validates the whole array value directly (`tags` =>
-     * `distinct`). These are the two idioms a Laravel user and a vi/validation user would
+     * `distinct`). These are the two idioms a Laravel user and a ahmednour/validation user would
      * each actually write for "no duplicates in this array" — compared via
      * assertEquivalentParity() rather than assertParity() since the rule shapes differ.
      */

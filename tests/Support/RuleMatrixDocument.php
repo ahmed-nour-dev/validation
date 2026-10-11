@@ -25,7 +25,7 @@ final class RuleMatrixDocument
         'file' => 'Files',
         'database' => 'Database',
         'auth' => 'Auth',
-        'other' => 'vi/validation extensions',
+        'other' => 'ahmednour/validation extensions',
         'meta' => 'Internal',
     ];
 
@@ -58,14 +58,14 @@ final class RuleMatrixDocument
         $out[] = '';
         $out[] = '<!-- Generated from resources/compatibility-matrix.json by `php tests/generate_rule_matrix.php`. Do not edit by hand. -->';
         $out[] = '';
-        $out[] = 'Every rule vi/validation knows about, and every rule the supported Laravel versions define.';
+        $out[] = 'Every rule ahmednour/validation knows about, and every rule the supported Laravel versions define.';
         $out[] = sprintf(
             'Parity is verified against the real `illuminate/validation` on Laravel %s × PHP %s in CI.',
             implode(' / ', (array) ($verified['laravel'] ?? [])),
             implode(' / ', (array) ($verified['php'] ?? []))
         );
         $out[] = '';
-        $out[] = '- **Engine**: the rule runs in `ValidatorEngine`, which covers every rule vi/validation supports.';
+        $out[] = '- **Engine**: the rule runs in `ValidatorEngine`, which covers every rule ahmednour/validation supports.';
         $out[] = '- **Native**: the rule can be inlined by `NativeCompiler`, i.e. its class implements `NativeCompilableInterface`. A schema runs natively only if *every* rule in it is native. Engine support never implies native support.';
         $out[] = '- **Parity**: ✅ pass/fail and failed fields match Laravel (parity-tested); 🟡 matches except for the noted cases; 🔴 intentionally different (pinned by a divergence test); ➖ no Laravel counterpart.';
         $out[] = '- **Nested / wildcard**: ' . (string) ($matrix['_attribute_addressing']['notes'] ?? '');

@@ -63,7 +63,7 @@ final class FuzzRegressionTest extends ParityTestCase
                 try {
                     $this->laravel(['a' => $value], ['a' => $rule])->passes();
                 } catch (\ValueError) {
-                    // Older Laravel 10 releases throw here themselves; vi/validation must still
+                    // Older Laravel 10 releases throw here themselves; ahmednour/validation must still
                     // reject the value rather than throw.
                     $result = (new \Vi\Validation\SchemaValidator(\Vi\Validation\Validator::fromRules(['a' => $rule])))->validate(['a' => $value]);
                     $this->assertFalse($result->isValid(), "{$rule} " . json_encode($value));
@@ -80,7 +80,7 @@ final class FuzzRegressionTest extends ParityTestCase
     public function testDistinctWithNestedArrays(): void
     {
         // Note: on a non-wildcard field Laravel's `distinct` never fails (it compares wildcard
-        // siblings), while vi/validation checks the array's own elements - a documented
+        // siblings), while ahmednour/validation checks the array's own elements - a documented
         // difference. What regressed was the crash, so assert behaviour directly.
         $validator = new \Vi\Validation\SchemaValidator(\Vi\Validation\Validator::fromRules(['a' => 'distinct']));
 
@@ -89,6 +89,21 @@ final class FuzzRegressionTest extends ParityTestCase
         $this->assertFalse($validator->validate(['a' => [[], []]])->isValid());
         $this->assertFalse($validator->validate(['a' => [['x' => 1], ['x' => 1]]])->isValid());
         $this->assertTrue($validator->validate(['a' => [['x' => 1], ['x' => 2]]])->isValid());
+    }
+
+    /**
+     * `digits` / `digits_between` with an array value raised "Array to string conversion"
+     * (found on Laravel 13, which fails such values instead of throwing). Older Laravel
+     * releases throw a TypeError themselves, so assert the behaviour directly.
+     */
+    public function testDigitsRulesFailNonScalarValuesInsteadOfThrowing(): void
+    {
+        foreach (['digits:3', 'digits_between:2,4'] as $rule) {
+            $validator = new \Vi\Validation\SchemaValidator(\Vi\Validation\Validator::fromRules(['a' => $rule]));
+
+            $this->assertFalse($validator->validate(['a' => ['x' => 'ABC']])->isValid(), $rule);
+            $this->assertTrue($validator->validate(['a' => '123'])->isValid(), $rule);
+        }
     }
 
     /**

@@ -5,7 +5,7 @@
  *
  * Absolute timings vary wildly between CI runners, so the gate checks *ratios measured in the
  * same process on the same machine* against benchmarks/baseline.json:
- *   - speedup of each vi/validation path over Laravel's validator,
+ *   - speedup of each ahmednour/validation path over Laravel's validator,
  *   - native over engine for natively compilable scenarios,
  *   - peak memory added while validating (must stay bounded).
  * Each measurement is the best of several repetitions to damp noise. Exits non-zero on a

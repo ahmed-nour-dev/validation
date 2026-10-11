@@ -24,10 +24,6 @@ final class GreaterThanOrEqualRule implements RuleInterface, NumericAwareInterfa
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         $otherValue = $context->getValue($this->otherField);
 
         if ($otherValue === null) {
@@ -81,6 +77,10 @@ final class GreaterThanOrEqualRule implements RuleInterface, NumericAwareInterfa
             return null;
         }
 
-        return null;
+        // Values of different types are not comparable; Laravel fails them (isSameType()).
+        return [
+            'rule' => 'gte',
+            'params' => ['value' => $this->otherField],
+        ];
     }
 }

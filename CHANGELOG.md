@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Non-implicit rules now validate a present `null` or `[]`, as Laravel does.** Previously every
+  rule other than `required*` / `accepted*` / `filled` / `present` / `prohibited*` was skipped for
+  `null` and `[]`, so `['age' => null]` passed `integer` and `['tags' => []]` passed `in_array_keys`.
+  Laravel skips a non-implicit rule only when the key is missing or the value is a blank string, so
+  `string`, `email`, `integer`, `min:3`, `in:a,b` and the rest now fail on a present `null`, and
+  `nullable` (or a missing key) is what makes it optional. If your payloads contain explicit nulls
+  for optional fields, add `nullable`. `nullable` itself no longer skips implicit rules:
+  `nullable|accepted` and `nullable|required_if:...` still run on `null`. Rules that used to pass any
+  value of the wrong type (`ascii`, `starts_with`, `ends_with`, `gt` / `gte` / `lt` / `lte`, `list`,
+  `active_url`, `country`, `language`) now fail it, and `min` sizes `null` as an empty string.
+  Native artifacts are regenerated (`NativeCompiler::COMPILER_VERSION` is now `2.1.0`).
+
+### Fixed
+- `FieldDefinition::nullable()` set a flag that nothing read, so the fluent `->nullable()` was a
+  no-op that only appeared to work because `null` was skipped for every rule. It now adds the
+  `nullable` rule.
+- `filled` now fails a key that is present with `null` (a missing key still passes), as in Laravel.
+
 ### Added
 - The rules Laravel 12 and 13 added: `doesnt_contain`, `encoding`, `in_array_keys`, `array_keys` and
   `base64`. They work from rule strings (`'tags' => 'doesnt_contain:spam'`), through
@@ -16,9 +35,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Laravel: `encoding` rejects an encoding mbstring does not know when the rule is built rather than on
   first validation, `doesnt_contain` / `in_array_keys` with no parameters throw when the rule
   string is parsed (Laravel accepts them and passes or fails every array respectively),
-  `doesnt_contain` compares loosely like Laravel 12 (Laravel 13 compares strictly), and `in_array_keys`
-  and `base64` skip an empty array like every other non-implicit rule, where Laravel fails it. None of the five can be natively compiled yet, so
-  schemas using them run through `ValidatorEngine`.
+  and `doesnt_contain` compares loosely like Laravel 12 (Laravel 13 compares strictly). None of the
+  five can be natively compiled yet, so schemas using them run through `ValidatorEngine`.
 
 ### Removed
 - Two stray development scripts from the repository root (`test_fast_validator.php`,

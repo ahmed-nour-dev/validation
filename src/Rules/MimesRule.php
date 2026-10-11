@@ -50,10 +50,6 @@ final class MimesRule implements RuleInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         $mimeType = $this->getMimeType($value);
 
         if ($mimeType === null || !in_array($mimeType, $this->allowedMimes, true)) {

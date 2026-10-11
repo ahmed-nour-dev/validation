@@ -22,10 +22,6 @@ final class DimensionsRule implements RuleInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         $path = $this->getPath($value);
         if ($path === null || !file_exists($path)) {
             return ['rule' => 'dimensions'];

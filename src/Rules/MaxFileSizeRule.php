@@ -19,10 +19,6 @@ final class MaxFileSizeRule implements RuleInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         $sizeInKb = $this->getFileSizeInKilobytes($value);
 
         if ($sizeInKb === null || $sizeInKb > $this->maxKilobytes) {

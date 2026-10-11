@@ -19,10 +19,6 @@ final class IpRule implements RuleInterface, NativeCompilableInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         if (!is_string($value)) {
             return ['rule' => $this->ruleName()];
         }
@@ -48,7 +44,7 @@ final class IpRule implements RuleInterface, NativeCompilableInterface
             'v6', 'ipv6' => 'FILTER_FLAG_IPV6',
             default => '0',
         };
-        $condition = "{$v} !== null && (!is_string({$v}) || filter_var({$v}, FILTER_VALIDATE_IP, {$flag}) === false)";
+        $condition = "(!is_string({$v}) || filter_var({$v}, FILTER_VALIDATE_IP, {$flag}) === false)";
 
         return $context->emitError($condition, $this->ruleName());
     }

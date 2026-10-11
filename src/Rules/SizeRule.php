@@ -24,10 +24,6 @@ final class SizeRule implements RuleInterface, NumericAwareInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         $actualSize = $this->getSize($value);
         
         // Determine type

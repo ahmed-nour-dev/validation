@@ -15,10 +15,6 @@ final class DateEqualsRule implements RuleInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         if (!is_string($value)) {
             return ['rule' => 'date_equals', 'parameters' => ['date' => $this->date]];
         }

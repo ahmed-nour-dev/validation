@@ -19,10 +19,6 @@ final class DateRule implements RuleInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         if ($this->format !== null) {
             // createFromFormat() throws ValueError on NUL bytes; never a valid formatted date.
             if (!is_string($value) || str_contains($value, "\0")) {

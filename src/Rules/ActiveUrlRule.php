@@ -11,8 +11,8 @@ final class ActiveUrlRule implements RuleInterface
 {
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null || !is_string($value)) {
-            return null;
+        if (!is_string($value)) {
+            return ['rule' => 'active_url'];
         }
 
         if (!checkdnsrr($value, 'A') && !checkdnsrr($value, 'AAAA') && !checkdnsrr($value, 'CNAME')) {

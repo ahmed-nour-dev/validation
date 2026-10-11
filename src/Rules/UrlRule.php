@@ -12,10 +12,6 @@ final class UrlRule implements RuleInterface, NativeCompilableInterface
 {
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         if (!is_string($value)) {
             return ['rule' => 'url'];
         }
@@ -30,7 +26,7 @@ final class UrlRule implements RuleInterface, NativeCompilableInterface
     public function compileNative(NativeCompilationContext $context): string
     {
         $v = $context->valName;
-        $condition = "{$v} !== null && (!is_string({$v}) || filter_var({$v}, FILTER_VALIDATE_URL) === false)";
+        $condition = "(!is_string({$v}) || filter_var({$v}, FILTER_VALIDATE_URL) === false)";
 
         return $context->emitError($condition, 'url');
     }

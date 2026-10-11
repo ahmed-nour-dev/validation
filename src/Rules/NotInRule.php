@@ -30,10 +30,6 @@ final class NotInRule implements RuleInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         if (is_array($value)) {
             // Laravel defines not_in as exactly !in: with an `array` rule on the field it fails
             // only when *every* element is in the list (and none is itself an array); without

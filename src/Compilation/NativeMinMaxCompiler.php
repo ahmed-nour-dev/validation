@@ -27,23 +27,22 @@ final class NativeMinMaxCompiler
         $errorStatement = $context->withIndent($indent . '    ')
             ->errorStatement($ruleName, "['type' => \$type_tag, '{$ruleName}' => {$limitExport}]");
 
-        return "{$indent}if ({$v} !== null) {\n"
-            . "{$indent}    \$invalid = false;\n"
-            . "{$indent}    if ({$numericCheck}) {\n"
-            . "{$indent}        if ((float){$v} {$operator} {$limitExport}) \$invalid = true;\n"
-            . "{$indent}        \$type_tag = 'numeric';\n"
-            . "{$indent}    } elseif (is_string({$v})) {\n"
-            . "{$indent}        if (mb_strlen({$v}) {$operator} {$limitExport}) \$invalid = true;\n"
-            . "{$indent}        \$type_tag = 'string';\n"
-            . "{$indent}    } elseif (is_array({$v})) {\n"
-            . "{$indent}        if (count({$v}) {$operator} {$limitExport}) \$invalid = true;\n"
-            . "{$indent}        \$type_tag = 'array';\n"
-            . "{$indent}    } else {\n"
-            . "{$indent}        \$type_tag = 'numeric';\n"
-            . "{$indent}    }\n"
-            . "{$indent}    if (\$invalid) {\n"
+        // null is sized like '' (Laravel getSize(): mb_strlen($value ?? '')), as in MinRule/MaxRule.
+        return "{$indent}\$invalid = false;\n"
+            . "{$indent}if ({$numericCheck}) {\n"
+            . "{$indent}    if ((float){$v} {$operator} {$limitExport}) \$invalid = true;\n"
+            . "{$indent}    \$type_tag = 'numeric';\n"
+            . "{$indent}} elseif (is_string({$v}) || {$v} === null) {\n"
+            . "{$indent}    if (mb_strlen((string) {$v}) {$operator} {$limitExport}) \$invalid = true;\n"
+            . "{$indent}    \$type_tag = 'string';\n"
+            . "{$indent}} elseif (is_array({$v})) {\n"
+            . "{$indent}    if (count({$v}) {$operator} {$limitExport}) \$invalid = true;\n"
+            . "{$indent}    \$type_tag = 'array';\n"
+            . "{$indent}} else {\n"
+            . "{$indent}    \$type_tag = 'numeric';\n"
+            . "{$indent}}\n"
+            . "{$indent}if (\$invalid) {\n"
             . $errorStatement
-            . "{$indent}    }\n"
             . "{$indent}}\n";
     }
 }

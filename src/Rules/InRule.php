@@ -30,10 +30,6 @@ final class InRule implements RuleInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         if (is_array($value)) {
             // Laravel: with an `array` rule on the field every element must be in the list;
             // otherwise an array never matches.

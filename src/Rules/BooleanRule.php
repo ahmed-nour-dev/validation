@@ -14,10 +14,6 @@ final class BooleanRule implements RuleInterface, NativeCompilableInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         if (!in_array($value, self::ACCEPTABLE, true)) {
             return ['rule' => 'boolean'];
         }
@@ -30,7 +26,7 @@ final class BooleanRule implements RuleInterface, NativeCompilableInterface
         $v = $context->valName;
 
         return $context->emitError(
-            "{$v} !== null && !in_array({$v}, [true, false, 0, 1, '0', '1'], true)",
+            "!in_array({$v}, [true, false, 0, 1, '0', '1'], true)",
             'boolean'
         );
     }

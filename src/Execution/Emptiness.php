@@ -45,4 +45,24 @@ final class Emptiness
             . " || (isset(\\Vi\\Validation\\Execution\\Emptiness::BLANK_FIRST[{$var}[0]])"
             . " && strspn({$var}, \\Vi\\Validation\\Execution\\Emptiness::TRIM_CHARS) === strlen({$var})))))";
     }
+
+    /**
+     * Whether a non-implicit rule (email, integer, min, ...) is skipped for a value, as PHP source
+     * for generated native code (ValidatorEngine inlines the same check).
+     *
+     * Laravel's Validator::presentOrRuleIsImplicit(): the rule is skipped when the key is absent
+     * or the value is a string that is blank after trim(). A present `null` or `[]` is *not*
+     * skipped - `['a' => null]` fails `string` and `['a' => []]` fails `email` - unless the field is
+     * `nullable`, which the caller adds. Not the same as {@see isEmpty()}, which is what
+     * `required`/`filled`/`prohibited` ask.
+     *
+     * @param string $var      variable holding the field value
+     * @param string $presence PHP expression that is true when the field's key exists in $data
+     */
+    public static function nativeSkipExpression(string $var, string $presence): string
+    {
+        return "({$var} === null ? !({$presence}) : (is_string({$var}) && ({$var} === ''"
+            . " || (isset(\\Vi\\Validation\\Execution\\Emptiness::BLANK_FIRST[{$var}[0]])"
+            . " && strspn({$var}, \\Vi\\Validation\\Execution\\Emptiness::TRIM_CHARS) === strlen({$var})))))";
+    }
 }

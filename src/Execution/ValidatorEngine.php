@@ -84,13 +84,14 @@ final class ValidatorEngine
                 $rules = $field->getRules();
                 $isNullable = $field->isNullable();
 
-                if ($value === null && $isNullable) {
-                    continue;
-                }
-
-                // Laravel semantics: null, [], and strings that are empty after trim() are "empty".
-                $isEmpty = $value === null || $value === [] || (is_string($value) && ($value === ''
-                    || (isset(Emptiness::BLANK_FIRST[$value[0]]) && Emptiness::isBlankString($value))));
+                // Laravel semantics (Validator::presentOrRuleIsImplicit): non-implicit rules are
+                // skipped for a missing key or a blank string, but a present null or [] is validated.
+                // `nullable` additionally skips a present null, but only for non-implicit rules:
+                // `nullable|accepted` and `nullable|required_if:...` still run on null in Laravel.
+                $isEmpty = $value === null
+                    ? ($isNullable || !$context->hasValue($name))
+                    : (is_string($value) && ($value === ''
+                        || (isset(Emptiness::BLANK_FIRST[$value[0]]) && Emptiness::isBlankString($value))));
 
                 foreach ($rules as $rule) {
                     // Non-implicit rules should skip if the value is "empty"

@@ -18,10 +18,6 @@ final class MinFileSizeRule implements RuleInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         $path = $this->getPath($value);
         if ($path === null || !file_exists($path)) {
             return ['rule' => 'min_file_size', 'parameters' => ['min' => (string) $this->min]];

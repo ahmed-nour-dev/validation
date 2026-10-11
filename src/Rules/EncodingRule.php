@@ -29,6 +29,10 @@ final class EncodingRule implements RuleInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
+        if ($value === null) {
+            return null;
+        }
+
         if (is_int($value) || is_float($value) || is_bool($value)) {
             $value = (string) $value;
         }

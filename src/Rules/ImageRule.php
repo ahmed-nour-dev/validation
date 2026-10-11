@@ -22,10 +22,6 @@ final class ImageRule implements RuleInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         if (!$this->isValidImage($value)) {
             return ['rule' => 'image'];
         }

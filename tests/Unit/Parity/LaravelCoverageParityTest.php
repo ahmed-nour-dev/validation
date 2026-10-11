@@ -101,20 +101,15 @@ final class LaravelCoverageParityTest extends ParityTestCase
         $this->assertParity(['a' => 'in_array_keys:x'], ['a' => ['x' => null]]);
     }
 
-    /**
-     * Laravel validates a present empty array; the engine treats [] as empty and skips every
-     * non-implicit rule, so in_array_keys and base64 pass where Laravel fails them. Pinned here so
-     * the matrix's 'partial' note stays true.
-     */
-    public function testEmptyArrayIsSkippedByInArrayKeysAndBase64(): void
+    public function testEmptyValuesAreValidatedLikeLaravel(): void
     {
         $this->requireLaravelRule('in_array_keys');
         $this->requireLaravelRule('base64');
 
         foreach (['in_array_keys:x,y', 'base64'] as $rule) {
-            $outcome = $this->assertDivergence(['a' => $rule], ['a' => []], 'engine skips empty arrays');
-            $this->assertTrue($outcome['laravel_fails'], $rule);
-            $this->assertFalse($outcome['fast_fails'], $rule);
+            $this->assertParity(['a' => $rule], ['a' => []]);
+            $this->assertParity(['a' => $rule], ['a' => null]);
+            $this->assertParity(['a' => "nullable|$rule"], ['a' => null]);
         }
     }
 
@@ -132,7 +127,7 @@ final class LaravelCoverageParityTest extends ParityTestCase
     public function testBase64(): void
     {
         $this->requireLaravelRule('base64');
-        foreach (['aGVsbG8=', 'aGVsbG8', 'aGVsbG8==', 'YQ==', 'YR==', '!!', 'not base64', 123, ['aGVsbG8=']] as $value) {
+        foreach (['aGVsbG8=', 'aGVsbG8', 'aGVsbG8==', 'YQ==', 'YR==', '!!', 'not base64', '', 123, ['aGVsbG8=']] as $value) {
             $this->assertParity(['a' => 'base64'], ['a' => $value]);
         }
     }

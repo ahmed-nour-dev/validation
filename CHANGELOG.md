@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-11
+
+This release changes validation results. Payloads that send an explicit `null` for a field without
+`nullable` now fail the field's rules (see the first `Changed` entry), so it is a minor release
+rather than a 0.1.x patch. Upgrading: add `nullable` to optional fields that clients send as `null`.
+
 ### Changed
 - **Non-implicit rules now validate a present `null` or `[]`, as Laravel does.** Previously every
   rule other than `required*` / `accepted*` / `filled` / `present` / `prohibited*` was skipped for

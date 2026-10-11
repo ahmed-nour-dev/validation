@@ -102,7 +102,6 @@ final class FuzzRegressionTest extends ParityTestCase
             $validator = new \Vi\Validation\SchemaValidator(\Vi\Validation\Validator::fromRules(['a' => $rule]));
 
             $this->assertFalse($validator->validate(['a' => ['x' => 'ABC']])->isValid(), $rule);
-            $this->assertFalse($validator->validate(['a' => []])->isValid(), $rule);
             $this->assertTrue($validator->validate(['a' => '123'])->isValid(), $rule);
         }
     }

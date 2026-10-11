@@ -14,8 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `inArrayKeys()`, `arrayKeys()`, `base64()`), with English and Arabic messages. They are also
   available when running on an older Laravel, where Laravel itself has no such rule. Differences from
   Laravel: `encoding` rejects an encoding mbstring does not know when the rule is built rather than on
-  first validation, and `doesnt_contain` / `in_array_keys` with no parameters throw when the rule
-  string is parsed (Laravel accepts them and passes or fails every array respectively). None of the five can be natively compiled yet, so
+  first validation, `doesnt_contain` / `in_array_keys` with no parameters throw when the rule
+  string is parsed (Laravel accepts them and passes or fails every array respectively),
+  `doesnt_contain` compares loosely like Laravel 12 (Laravel 13 compares strictly), and `in_array_keys`
+  and `base64` skip an empty array like every other non-implicit rule, where Laravel fails it. None of the five can be natively compiled yet, so
   schemas using them run through `ValidatorEngine`.
 
 ### Removed

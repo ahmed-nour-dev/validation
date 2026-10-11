@@ -26,7 +26,7 @@ final class DoesntContainRule implements RuleInterface
     {
         if (is_array($value)) {
             foreach ($this->values as $needle) {
-                if (in_array($needle, $value, true)) {
+                if (in_array($needle, $value)) {
                     return $this->failure();
                 }
             }

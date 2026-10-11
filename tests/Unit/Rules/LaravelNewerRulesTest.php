@@ -28,12 +28,13 @@ final class LaravelNewerRulesTest extends TestCase
         return new ValidationContext([], new ErrorCollector());
     }
 
-    public function testDoesntContainComparesStrictly(): void
+    public function testDoesntContainComparesLoosely(): void
     {
         $rule = new DoesntContainRule(['1', 'x']);
 
-        $this->assertNull($rule->validate([1, 2], 'f', $this->context()));
+        $this->assertNull($rule->validate([2, 3], 'f', $this->context()));
         $this->assertNull($rule->validate(['a'], 'f', $this->context()));
+        $this->assertSame('doesnt_contain', $rule->validate([1, 2], 'f', $this->context())['rule'] ?? null);
         $this->assertSame('doesnt_contain', $rule->validate(['1'], 'f', $this->context())['rule'] ?? null);
         $this->assertSame('doesnt_contain', $rule->validate('x', 'f', $this->context())['rule'] ?? null);
     }

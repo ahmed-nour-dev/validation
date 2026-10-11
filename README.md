@@ -463,11 +463,11 @@ dependencies and known differences for every rule.
 | **Core & Presence** | `bail`, `filled`, `missing`, `nullable`, `present`, `required`, `sometimes` |
 | **Conditionals** | `accepted_if`, `declined_if`, `exclude`, `exclude_if`, `exclude_unless`, `exclude_with`, `exclude_without`, `missing_if`, `missing_unless`, `missing_with`, `missing_with_all`, `present_if`, `present_unless`, `present_with`, `present_with_all`, `prohibited`, `prohibited_if`, `prohibited_if_accepted`, `prohibited_if_declined`, `prohibited_unless`, `prohibits`, `required_if`, `required_if_accepted`, `required_if_declined`, `required_unless`, `required_with`, `required_with_all`, `required_without`, `required_without_all` |
 | **Types** | `array`, `boolean`, `date`, `decimal`, `enum`, `integer`, `json`, `list`, `numeric`, `string` |
-| **Strings** | `active_url`, `alpha`, `alpha_dash`, `alpha_num`, `ascii`, `doesnt_end_with`, `doesnt_start_with`, `email`, `ends_with`, `hex_color`, `ip`, `ipv4`, `ipv6`, `lowercase`, `mac_address`, `not_regex`, `regex`, `starts_with`, `ulid`, `uppercase`, `url`, `uuid` |
+| **Strings** | `active_url`, `alpha`, `alpha_dash`, `alpha_num`, `ascii`, `base64`, `doesnt_end_with`, `doesnt_start_with`, `email`, `encoding`, `ends_with`, `hex_color`, `ip`, `ipv4`, `ipv6`, `lowercase`, `mac_address`, `not_regex`, `regex`, `starts_with`, `ulid`, `uppercase`, `url`, `uuid` |
 | **Numbers & Size** | `between`, `digits`, `digits_between`, `max`, `max_digits`, `min`, `min_digits`, `multiple_of`, `size` |
 | **Comparison** | `confirmed`, `different`, `gt`, `gte`, `in`, `lt`, `lte`, `not_in`, `same` |
 | **Dates** | `after`, `after_or_equal`, `before`, `before_or_equal`, `date_equals`, `date_format`, `timezone` |
-| **Arrays** | `contains`, `distinct`, `in_array`, `required_array_keys` |
+| **Arrays** | `array_keys`, `contains`, `distinct`, `doesnt_contain`, `in_array`, `in_array_keys`, `required_array_keys` |
 | **Files** | `dimensions`, `extensions`, `file`, `image`, `max_file_size`, `mimes`, `mimetypes`, `min_file_size` |
 | **Acceptance** | `accepted`, `declined` |
 | **Database** | `exists`, `unique` |

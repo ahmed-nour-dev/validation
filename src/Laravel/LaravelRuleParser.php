@@ -184,7 +184,9 @@ final class LaravelRuleParser
 
             // Rules added for full Laravel coverage.
             'max_digits', 'min_digits' => isset($params[0]) && $params[0] !== '' ? new $class((int) $params[0]) : null,
-            'contains' => $params !== [] ? new $class($params) : null,
+            'contains', 'doesnt_contain' => $params !== [] ? new $class($params) : null,
+            'encoding' => isset($params[0]) && $params[0] !== '' ? new $class($params[0]) : null,
+            'array_keys', 'in_array_keys' => $params !== [] ? new $class(...$params) : null,
             'in_array' => isset($params[0]) && $params[0] !== '' ? new $class($params[0]) : null,
             'present_if', 'present_unless' => isset($params[0], $params[1]) ? new $class($params[0], array_slice($params, 1)) : null,
             'present_with', 'present_with_all' => $params !== [] ? new $class($params) : null,

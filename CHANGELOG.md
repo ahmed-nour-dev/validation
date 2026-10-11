@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- The rules Laravel 12 and 13 added: `doesnt_contain`, `encoding`, `in_array_keys`, `array_keys` and
+  `base64`. They work from rule strings (`'tags' => 'doesnt_contain:spam'`), through
+  `FastValidator::make()`, and as fluent `FieldDefinition` methods (`doesntContain()`, `encoding()`,
+  `inArrayKeys()`, `arrayKeys()`, `base64()`), with English and Arabic messages. They are also
+  available when running on an older Laravel, where Laravel itself has no such rule. Differences from
+  Laravel: `encoding` rejects an encoding mbstring does not know when the rule is built rather than on
+  first validation, and `doesnt_contain` / `in_array_keys` with no parameters throw when the rule
+  string is parsed (Laravel accepts them and passes or fails every array respectively). None of the five can be natively compiled yet, so
+  schemas using them run through `ValidatorEngine`.
+
+### Removed
+- Two stray development scripts from the repository root (`test_fast_validator.php`,
+  `test_type_messages.php`).
+
 ## [0.1.0] - 2026-10-11
 
 First tagged release. The `[0.1.0] - 2026-02-04` entry that used to live below was never tagged;

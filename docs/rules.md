@@ -3,7 +3,7 @@
 <!-- Generated from resources/compatibility-matrix.json by `php tests/generate_rule_matrix.php`. Do not edit by hand. -->
 
 Every rule ahmednour/validation knows about, and every rule the supported Laravel versions define.
-**115 rules: 107 with verified Laravel parity, 20 natively compilable.**
+**120 rules: 107 with verified Laravel parity, 20 natively compilable.**
 
 Parity is verified against the real `illuminate/validation` on Laravel 10.x / 11.x / 12.x / 13.x × PHP 8.1 / 8.2 / 8.3 / 8.4 in CI.
 
@@ -89,9 +89,11 @@ Parity is verified against the real `illuminate/validation` on Laravel 10.x / 11
 | `alpha_dash` | yes | yes | ✅ verified | all | — |  |
 | `alpha_num` | yes | yes | ✅ verified | all | — |  |
 | `ascii` | yes | no | ✅ verified | all | — |  |
+| `base64` | no | no | ⛔ unsupported | 13.x+ | — | Laravel 13 rule not implemented yet; the parser rejects it with UnsupportedRuleException. |
 | `doesnt_end_with` | yes | no | ✅ verified | all | — |  |
 | `doesnt_start_with` | yes | no | ✅ verified | all | — |  |
 | `email` | yes | yes | ✅ verified | all | — |  |
+| `encoding` | no | no | ⛔ unsupported | 12.x+ | — | Laravel 12 rule not implemented yet; the parser rejects it with UnsupportedRuleException. |
 | `ends_with` | yes | no | ✅ verified | all | — |  |
 | `hex_color` | yes | no | ✅ verified | 10.x+ | — |  |
 | `ip` | yes | yes | ✅ verified | all | — |  |
@@ -151,9 +153,12 @@ Parity is verified against the real `illuminate/validation` on Laravel 10.x / 11
 
 | Rule | Engine | Native | Parity | Laravel | Dependencies | Notes |
 | :--- | :---: | :---: | :--- | :--- | :--- | :--- |
+| `array_keys` | no | no | ⛔ unsupported | 13.x+ | — | Laravel 13 rule not implemented yet; the parser rejects it with UnsupportedRuleException. |
 | `contains` | yes | no | ✅ verified | 11.x+ | — |  |
 | `distinct` | yes | no | 🟡 partial | all | — | Laravel's distinct compares wildcard siblings ('tags.*' => 'distinct') and never fails on a plain field; ahmednour/validation (which has no wildcards) checks the array's own elements ('tags' => 'array\|distinct'). Equivalent for the idiomatic uses, compared via assertEquivalentParity() in ArrayParityTest. Strict mode uses ===. |
+| `doesnt_contain` | no | no | ⛔ unsupported | 12.x+ | — | Laravel 12 rule not implemented yet; the parser rejects it with UnsupportedRuleException. |
 | `in_array` | yes | no | ✅ verified | all | — | Other path may use '*' wildcards (in_array:allowed.*); the value is compared loosely against every matching leaf, like Laravel's Str::is() + in_array(). |
+| `in_array_keys` | no | no | ⛔ unsupported | 12.x+ | — | Laravel 12 rule not implemented yet; the parser rejects it with UnsupportedRuleException. |
 | `required_array_keys` | yes | no | ✅ verified | all | — | Crashed via rule string before issue #5 (RequiredArrayKeysRule takes variadic string ...$keys, but LaravelRuleParser wrongly grouped it with array-taking rules like required_with); fixed. |
 
 ## Files

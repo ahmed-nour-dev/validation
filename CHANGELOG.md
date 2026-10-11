@@ -21,7 +21,9 @@ its contents are kept under "Initial development" at the end of this file.
 ### Added
 - Laravel 12 and 13 support (`illuminate/validation: ^10.0|^11.0|^12.0|^13.0`), and PHP 8.4 in the
   CI matrix. README compatibility table updated; Laravel 12 requires PHP >= 8.2 and Laravel 13
-  requires PHP >= 8.3.
+  requires PHP >= 8.3. The rules those releases added (`doesnt_contain`, `encoding`,
+  `in_array_keys`, `array_keys`, `base64`) are not implemented yet and are listed as `unsupported`
+  in the compatibility matrix; the parser rejects them with `UnsupportedRuleException`.
 - Comprehensive gap analysis and roadmap document.
 - Week 1 foundational tasks (CHANGELOG, LICENSE, CONTRIBUTING).
 - Explicit PHP/Laravel compatibility matrix: CI now runs a `--prefer-lowest` dependency job
@@ -94,6 +96,8 @@ its contents are kept under "Initial development" at the end of this file.
   The README's performance table is now generated from `benchmarks/results/reference.*` (#9).
 
 ### Fixed
+- `digits` and `digits_between` threw "Array to string conversion" on array values; they now fail
+  validation like Laravel 13 does.
 - All fluent-built schemas shared a single native artifact key (their raw rules array is
   empty), so one schema's native closure could be used for another (#19).
 - `FastValidatorFactory`'s schema cache keyed closures and rule objects by

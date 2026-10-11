@@ -92,6 +92,22 @@ final class FuzzRegressionTest extends ParityTestCase
     }
 
     /**
+     * `digits` / `digits_between` with an array value raised "Array to string conversion"
+     * (found on Laravel 13, which fails such values instead of throwing). Older Laravel
+     * releases throw a TypeError themselves, so assert the behaviour directly.
+     */
+    public function testDigitsRulesFailNonScalarValuesInsteadOfThrowing(): void
+    {
+        foreach (['digits:3', 'digits_between:2,4'] as $rule) {
+            $validator = new \Vi\Validation\SchemaValidator(\Vi\Validation\Validator::fromRules(['a' => $rule]));
+
+            $this->assertFalse($validator->validate(['a' => ['x' => 'ABC']])->isValid(), $rule);
+            $this->assertFalse($validator->validate(['a' => []])->isValid(), $rule);
+            $this->assertTrue($validator->validate(['a' => '123'])->isValid(), $rule);
+        }
+    }
+
+    /**
      * Laravel treats strings that are empty after trim() as empty: `required`/`filled` rejected
      * them in Laravel but passed here, and non-implicit rules failed them here but were skipped
      * by Laravel.

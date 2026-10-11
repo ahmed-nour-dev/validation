@@ -3,7 +3,7 @@
 <!-- Generated from resources/compatibility-matrix.json by `php tests/generate_rule_matrix.php`. Do not edit by hand. -->
 
 Every rule ahmednour/validation knows about, and every rule the supported Laravel versions define.
-**120 rules: 107 with verified Laravel parity, 20 natively compilable.**
+**120 rules: 109 with verified Laravel parity, 20 natively compilable.**
 
 Parity is verified against the real `illuminate/validation` on Laravel 10.x / 11.x / 12.x / 13.x × PHP 8.1 / 8.2 / 8.3 / 8.4 in CI.
 
@@ -89,11 +89,11 @@ Parity is verified against the real `illuminate/validation` on Laravel 10.x / 11
 | `alpha_dash` | yes | yes | ✅ verified | all | — |  |
 | `alpha_num` | yes | yes | ✅ verified | all | — |  |
 | `ascii` | yes | no | ✅ verified | all | — |  |
-| `base64` | no | no | ⛔ unsupported | 13.x+ | — | Laravel 13 rule not implemented yet; the parser rejects it with UnsupportedRuleException. |
+| `base64` | yes | no | 🟡 partial | 13.x+ | — | Laravel 13 rule. The engine treats an empty array as empty and skips the rule, where Laravel fails it. Also available on older Laravel versions, where the parity test is skipped. |
 | `doesnt_end_with` | yes | no | ✅ verified | all | — |  |
 | `doesnt_start_with` | yes | no | ✅ verified | all | — |  |
 | `email` | yes | yes | ✅ verified | all | — |  |
-| `encoding` | no | no | ⛔ unsupported | 12.x+ | — | Laravel 12 rule not implemented yet; the parser rejects it with UnsupportedRuleException. |
+| `encoding` | yes | no | ✅ verified | 12.x+ | — | Laravel 12 rule. An encoding mbstring does not know throws InvalidArgumentException when the rule is built, where Laravel throws on first validation. Laravel's File-content check is not applied. Also available on older Laravel versions, where the parity test is skipped. |
 | `ends_with` | yes | no | ✅ verified | all | — |  |
 | `hex_color` | yes | no | ✅ verified | 10.x+ | — |  |
 | `ip` | yes | yes | ✅ verified | all | — |  |
@@ -153,12 +153,12 @@ Parity is verified against the real `illuminate/validation` on Laravel 10.x / 11
 
 | Rule | Engine | Native | Parity | Laravel | Dependencies | Notes |
 | :--- | :---: | :---: | :--- | :--- | :--- | :--- |
-| `array_keys` | no | no | ⛔ unsupported | 13.x+ | — | Laravel 13 rule not implemented yet; the parser rejects it with UnsupportedRuleException. |
+| `array_keys` | yes | no | ✅ verified | 13.x+ | — | Laravel 13 rule. Also available when running on older Laravel versions, where the parity test is skipped because Laravel itself has no such rule. |
 | `contains` | yes | no | ✅ verified | 11.x+ | — |  |
 | `distinct` | yes | no | 🟡 partial | all | — | Laravel's distinct compares wildcard siblings ('tags.*' => 'distinct') and never fails on a plain field; ahmednour/validation (which has no wildcards) checks the array's own elements ('tags' => 'array\|distinct'). Equivalent for the idiomatic uses, compared via assertEquivalentParity() in ArrayParityTest. Strict mode uses ===. |
-| `doesnt_contain` | no | no | ⛔ unsupported | 12.x+ | — | Laravel 12 rule not implemented yet; the parser rejects it with UnsupportedRuleException. |
+| `doesnt_contain` | yes | no | 🟡 partial | 12.x+ | — | Laravel 12 rule. Values are compared loosely (the string "1" matches the integer 1), like contains and like Laravel 12; Laravel 13 compares strictly, so on 13 an integer 1 passes doesnt_contain:1 where this rule fails it. Also available on older Laravel versions, where the parity test is skipped. |
 | `in_array` | yes | no | ✅ verified | all | — | Other path may use '*' wildcards (in_array:allowed.*); the value is compared loosely against every matching leaf, like Laravel's Str::is() + in_array(). |
-| `in_array_keys` | no | no | ⛔ unsupported | 12.x+ | — | Laravel 12 rule not implemented yet; the parser rejects it with UnsupportedRuleException. |
+| `in_array_keys` | yes | no | 🟡 partial | 12.x+ | — | Laravel 12 rule. The engine treats an empty array as empty and skips the rule, where Laravel fails it. Also available on older Laravel versions, where the parity test is skipped. |
 | `required_array_keys` | yes | no | ✅ verified | all | — | Crashed via rule string before issue #5 (RequiredArrayKeysRule takes variadic string ...$keys, but LaravelRuleParser wrongly grouped it with array-taking rules like required_with); fixed. |
 
 ## Files

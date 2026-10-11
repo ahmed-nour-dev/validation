@@ -443,6 +443,36 @@ final class FieldDefinition
         return $this;
     }
 
+    public function inArrayKeys(string ...$keys): self
+    {
+        $this->rules[] = new \Vi\Validation\Rules\InArrayKeysRule(...$keys);
+        return $this;
+    }
+
+    public function arrayKeys(string ...$keys): self
+    {
+        $this->rules[] = new \Vi\Validation\Rules\ArrayKeysRule(...$keys);
+        return $this;
+    }
+
+    public function doesntContain(string ...$values): self
+    {
+        $this->rules[] = new \Vi\Validation\Rules\DoesntContainRule(array_values($values));
+        return $this;
+    }
+
+    public function encoding(string $encoding): self
+    {
+        $this->rules[] = new \Vi\Validation\Rules\EncodingRule($encoding);
+        return $this;
+    }
+
+    public function base64(): self
+    {
+        $this->rules[] = new \Vi\Validation\Rules\Base64Rule();
+        return $this;
+    }
+
     public function startsWith(string ...$values): self
     {
         /** @var array<int, string> $castedValues */

@@ -170,6 +170,11 @@ final class Translator implements TranslatorInterface
     {
         $this->messages['en'] = [
             'contains' => 'The :attribute field is missing a required value.',
+            'doesnt_contain' => 'The :attribute field must not contain any of the following: :values.',
+            'encoding' => 'The :attribute field must be encoded in :encoding.',
+            'in_array_keys' => 'The :attribute field must contain at least one of the following keys: :values.',
+            'array_keys' => 'The :attribute field must only contain the following keys: :values.',
+            'base64' => 'The :attribute field must be a valid Base64 string.',
             'hex_color' => 'The :attribute field must be a valid hexadecimal color.',
             'in_array' => 'The :attribute field must exist in :other.',
             'max_digits' => 'The :attribute field must not have more than :max digits.',

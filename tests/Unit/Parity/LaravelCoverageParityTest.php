@@ -10,8 +10,9 @@ use Vi\Validation\Tests\Unit\Parity\Support\ParityTestCase;
 /**
  * Covers RuleId: contains, hex_color, in_array, max_digits, min_digits, present_if,
  * present_unless, present_with, present_with_all, prohibited_if_accepted,
- * prohibited_if_declined, required_if_declined - the Laravel rules ahmednour/validation didn't
- * implement at all - plus Laravel's dependent-value matching for every *_if / *_unless rule.
+ * prohibited_if_declined, required_if_declined, doesnt_contain, encoding, in_array_keys,
+ * array_keys, base64 - the Laravel rules ahmednour/validation didn't implement at all - plus
+ * Laravel's dependent-value matching for every *_if / *_unless rule.
  *
  * Rules that the installed Laravel version doesn't have yet are skipped for it.
  */
@@ -50,6 +51,90 @@ final class LaravelCoverageParityTest extends ParityTestCase
         $this->assertParity(['a' => 'contains:x,y'], ['a' => ['x']]);
         $this->assertParity(['a' => 'contains:1'], ['a' => [1, 2]]);
         $this->assertParity(['a' => 'contains:x'], ['a' => 'x']);
+    }
+
+    public function testDoesntContain(): void
+    {
+        $this->requireLaravelRule('doesnt_contain');
+        $this->assertParity(['a' => 'doesnt_contain:x,y'], ['a' => ['p', 'q']]);
+        $this->assertParity(['a' => 'doesnt_contain:x,y'], ['a' => ['p', 'y']]);
+        $this->assertParity(['a' => 'doesnt_contain:x'], ['a' => 'x']);
+        $this->assertParity(['a' => 'doesnt_contain:1'], ['a' => ['1', '2']]);
+        $this->assertParity(['a' => 'doesnt_contain:1'], ['a' => ['2', '3']]);
+    }
+
+    /**
+     * Laravel 12 compares loosely ("1" matches the integer 1), Laravel 13 strictly. The library
+     * is loose, like `contains`, so the int-vs-string case is only a parity case on Laravel < 13.
+     */
+    public function testDoesntContainLooseComparison(): void
+    {
+        $this->requireLaravelRule('doesnt_contain');
+
+        $fast = $this->fast(['a' => [1, 2]], ['a' => 'doesnt_contain:1']);
+        self::assertTrue($fast->fails());
+
+        $installed = \Composer\InstalledVersions::getVersion('illuminate/validation');
+        if ($installed !== null && version_compare($installed, '13.0.0', '<')) {
+            $this->assertParity(['a' => 'doesnt_contain:1'], ['a' => [1, 2]]);
+        } else {
+            $this->assertFalse($this->laravel(['a' => [1, 2]], ['a' => 'doesnt_contain:1'])->fails());
+        }
+    }
+
+    public function testEncoding(): void
+    {
+        $this->requireLaravelRule('encoding');
+        foreach (['héllo', "\xff\xfe", 'plain', 123, ['é'], ["\xff"]] as $value) {
+            $this->assertParity(['a' => 'encoding:utf-8'], ['a' => $value]);
+            $this->assertParity(['a' => 'encoding:ASCII'], ['a' => $value]);
+        }
+    }
+
+    public function testInArrayKeys(): void
+    {
+        $this->requireLaravelRule('in_array_keys');
+        $this->assertParity(['a' => 'in_array_keys:x,y'], ['a' => ['y' => 1]]);
+        $this->assertParity(['a' => 'in_array_keys:x,y'], ['a' => ['z' => 1]]);
+        $this->assertParity(['a' => 'in_array_keys:x'], ['a' => 'x']);
+        $this->assertParity(['a' => 'in_array_keys:1'], ['a' => [1 => 'one']]);
+        $this->assertParity(['a' => 'in_array_keys:x'], ['a' => ['x' => null]]);
+    }
+
+    /**
+     * Laravel validates a present empty array; the engine treats [] as empty and skips every
+     * non-implicit rule, so in_array_keys and base64 pass where Laravel fails them. Pinned here so
+     * the matrix's 'partial' note stays true.
+     */
+    public function testEmptyArrayIsSkippedByInArrayKeysAndBase64(): void
+    {
+        $this->requireLaravelRule('in_array_keys');
+        $this->requireLaravelRule('base64');
+
+        foreach (['in_array_keys:x,y', 'base64'] as $rule) {
+            $outcome = $this->assertDivergence(['a' => $rule], ['a' => []], 'engine skips empty arrays');
+            $this->assertTrue($outcome['laravel_fails'], $rule);
+            $this->assertFalse($outcome['fast_fails'], $rule);
+        }
+    }
+
+    public function testArrayKeys(): void
+    {
+        $this->requireLaravelRule('array_keys');
+        $this->assertParity(['a' => 'array_keys:x,y'], ['a' => ['x' => 1]]);
+        $this->assertParity(['a' => 'array_keys:x,y'], ['a' => ['x' => 1, 'z' => 2]]);
+        $this->assertParity(['a' => 'array_keys:x,y'], ['a' => []]);
+        $this->assertParity(['a' => 'array_keys:x'], ['a' => 'x']);
+        $this->assertParity(['a' => 'array_keys:0,1'], ['a' => ['p', 'q']]);
+        $this->assertParity(['a' => 'array_keys:0,1'], ['a' => ['p', 'q', 'r']]);
+    }
+
+    public function testBase64(): void
+    {
+        $this->requireLaravelRule('base64');
+        foreach (['aGVsbG8=', 'aGVsbG8', 'aGVsbG8==', 'YQ==', 'YR==', '!!', 'not base64', 123, ['aGVsbG8=']] as $value) {
+            $this->assertParity(['a' => 'base64'], ['a' => $value]);
+        }
     }
 
     public function testInArray(): void

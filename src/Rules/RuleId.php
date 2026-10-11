@@ -18,8 +18,10 @@ enum RuleId: string
     case ALPHA_DASH = 'alpha_dash';
     case ALPHA_NUM = 'alpha_num';
     case ARRAY = 'array';
+    case ARRAY_KEYS = 'array_keys';
     case ASCII = 'ascii';
     case BAIL = 'bail';
+    case BASE64 = 'base64';
     case BEFORE = 'before';
     case BEFORE_OR_EQUAL = 'before_or_equal';
     case BETWEEN = 'between';
@@ -41,9 +43,11 @@ enum RuleId: string
     case DIGITS_BETWEEN = 'digits_between';
     case DIMENSIONS = 'dimensions';
     case DISTINCT = 'distinct';
+    case DOESNT_CONTAIN = 'doesnt_contain';
     case DOESNT_END_WITH = 'doesnt_end_with';
     case DOESNT_START_WITH = 'doesnt_start_with';
     case EMAIL = 'email';
+    case ENCODING = 'encoding';
     case ENDS_WITH = 'ends_with';
     case ENUM = 'enum';
     case EXCLUDE = 'exclude';
@@ -61,6 +65,7 @@ enum RuleId: string
     case IMAGE = 'image';
     case IN = 'in';
     case IN_ARRAY = 'in_array';
+    case IN_ARRAY_KEYS = 'in_array_keys';
     case INTEGER = 'integer';
     case IP = 'ip';
     case JSON = 'json';

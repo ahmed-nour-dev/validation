@@ -3,7 +3,7 @@
 <!-- Generated from resources/compatibility-matrix.json by `php tests/generate_rule_matrix.php`. Do not edit by hand. -->
 
 Every rule ahmednour/validation knows about, and every rule the supported Laravel versions define.
-**120 rules: 111 with verified Laravel parity, 20 natively compilable.**
+**120 rules: 107 with verified Laravel parity, 20 natively compilable.**
 
 Parity is verified against the real `illuminate/validation` on Laravel 10.x / 11.x / 12.x / 13.x × PHP 8.1 / 8.2 / 8.3 / 8.4 in CI.
 
@@ -88,10 +88,10 @@ Parity is verified against the real `illuminate/validation` on Laravel 10.x / 11
 | `alpha` | yes | yes | ✅ verified | all | — |  |
 | `alpha_dash` | yes | yes | ✅ verified | all | — |  |
 | `alpha_num` | yes | yes | ✅ verified | all | — |  |
-| `ascii` | yes | no | ✅ verified | all | — |  |
+| `ascii` | yes | no | 🟡 partial | all | — | For a present null or [] this rule follows Laravel 13 (it fails); Laravel 12 and older pass it. |
 | `base64` | yes | no | ✅ verified | 13.x+ | — | Laravel 13 rule. Also available on older Laravel versions, where the parity test is skipped. |
-| `doesnt_end_with` | yes | no | ✅ verified | all | — |  |
-| `doesnt_start_with` | yes | no | ✅ verified | all | — |  |
+| `doesnt_end_with` | yes | no | 🟡 partial | all | — | For a present null or [] this rule follows Laravel 13 (it fails); Laravel 12 and older pass it. |
+| `doesnt_start_with` | yes | no | 🟡 partial | all | — | For a present null or [] this rule follows Laravel 13 (it fails); Laravel 12 and older pass it. |
 | `email` | yes | yes | ✅ verified | all | — |  |
 | `encoding` | yes | no | ✅ verified | 12.x+ | — | Laravel 12 rule. An encoding mbstring does not know throws InvalidArgumentException when the rule is built, where Laravel throws on first validation. Laravel's File-content check is not applied. Also available on older Laravel versions, where the parity test is skipped. |
 | `ends_with` | yes | no | ✅ verified | all | — |  |
@@ -117,7 +117,7 @@ Parity is verified against the real `illuminate/validation` on Laravel 10.x / 11
 | `digits` | yes | no | ✅ verified | all | — |  |
 | `digits_between` | yes | no | ✅ verified | all | — | Crashed via rule string before issue #5 (LaravelRuleParser cast params to float, but DigitsBetweenRule's constructor requires int); fixed. |
 | `max` | yes | yes | ✅ verified | all | — |  |
-| `max_digits` | yes | no | ✅ verified | all | — |  |
+| `max_digits` | yes | no | 🟡 partial | all | — | For a present null or [] this rule follows Laravel 13 (it fails); Laravel 12 and older pass it. |
 | `min` | yes | yes | ✅ verified | all | — |  |
 | `min_digits` | yes | no | ✅ verified | all | — |  |
 | `multiple_of` | yes | no | ✅ verified | all | — |  |

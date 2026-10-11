@@ -18,6 +18,12 @@ use Vi\Validation\Tests\Unit\Parity\Support\ParityTestCase;
 #[Group('laravel')]
 final class EmptyValueParityTest extends ParityTestCase
 {
+    /**
+     * Rules whose handling of a present null / [] changed in Laravel 13: 12 and older pass it,
+     * 13 fails it. The library follows 13, so these are only comparable on 13+ (see the matrix).
+     */
+    private const LARAVEL_13_BEHAVIOUR = ['ascii', 'doesnt_end_with', 'doesnt_start_with', 'max_digits'];
+
     private const OTHER_FIELDS = ['other' => 'yes', 'arr' => ['x', 'y'], 'a_confirmation' => 'q'];
 
     /**
@@ -52,13 +58,43 @@ final class EmptyValueParityTest extends ParityTestCase
         }
     }
 
+    private function skipIfLaravelPredates13Behaviour(string $rule): void
+    {
+        $installed = \Composer\InstalledVersions::getVersion('illuminate/validation');
+        if (
+            in_array(explode(':', $rule, 2)[0], self::LARAVEL_13_BEHAVIOUR, true)
+            && ($installed === null || version_compare($installed, '13.0.0', '<'))
+        ) {
+            self::markTestSkipped("Laravel < 13 passes a present null/[] for '{$rule}'; the library follows 13.");
+        }
+    }
+
+    /**
+     * Older Laravel versions throw a TypeError themselves for some inputs (e.g. `uppercase` on an
+     * array); there is nothing to compare then. A TypeError from the library is still a failure.
+     *
+     * @param array<string, mixed> $rules
+     * @param array<string, mixed> $data
+     */
+    private function assertParityWhereLaravelCanRun(array $rules, array $data): void
+    {
+        try {
+            $this->assertParity($rules, $data);
+        } catch (\TypeError $e) {
+            if (!str_contains(str_replace('\\', '/', $e->getFile()), '/vendor/illuminate/')) {
+                throw $e;
+            }
+        }
+    }
+
     #[DataProvider('nonImplicitRules')]
     public function testPresentNullAndEmptyArrayAreValidated(string $rule): void
     {
         $this->skipIfUnknownToLaravel($rule);
+        $this->skipIfLaravelPredates13Behaviour($rule);
 
         foreach ([null, []] as $value) {
-            $this->assertParity(['a' => $rule], ['a' => $value] + self::OTHER_FIELDS);
+            $this->assertParityWhereLaravelCanRun(['a' => $rule], ['a' => $value] + self::OTHER_FIELDS);
         }
     }
 
@@ -68,7 +104,7 @@ final class EmptyValueParityTest extends ParityTestCase
         $this->skipIfUnknownToLaravel($rule);
 
         foreach (['', ' ', "\t\n"] as $value) {
-            $this->assertParity(['a' => $rule], ['a' => $value] + self::OTHER_FIELDS);
+            $this->assertParityWhereLaravelCanRun(['a' => $rule], ['a' => $value] + self::OTHER_FIELDS);
         }
         $this->assertParity(['a' => $rule], self::OTHER_FIELDS);
     }
@@ -77,9 +113,10 @@ final class EmptyValueParityTest extends ParityTestCase
     public function testNullableSkipsOnlyNull(string $rule): void
     {
         $this->skipIfUnknownToLaravel($rule);
+        $this->skipIfLaravelPredates13Behaviour($rule);
 
-        $this->assertParity(['a' => "nullable|$rule"], ['a' => null] + self::OTHER_FIELDS);
-        $this->assertParity(['a' => "nullable|$rule"], ['a' => []] + self::OTHER_FIELDS);
+        $this->assertParityWhereLaravelCanRun(['a' => "nullable|$rule"], ['a' => null] + self::OTHER_FIELDS);
+        $this->assertParityWhereLaravelCanRun(['a' => "nullable|$rule"], ['a' => []] + self::OTHER_FIELDS);
     }
 
     public function testNullableDoesNotSkipImplicitRules(): void

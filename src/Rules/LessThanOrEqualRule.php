@@ -24,10 +24,6 @@ final class LessThanOrEqualRule implements RuleInterface, NumericAwareInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         $otherValue = $context->getValue($this->otherField);
 
         if ($otherValue === null) {
@@ -81,6 +77,10 @@ final class LessThanOrEqualRule implements RuleInterface, NumericAwareInterface
             return null;
         }
 
-        return null;
+        // Values of different types are not comparable; Laravel fails them (isSameType()).
+        return [
+            'rule' => 'lte',
+            'params' => ['value' => $this->otherField],
+        ];
     }
 }

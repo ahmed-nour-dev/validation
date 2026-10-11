@@ -12,10 +12,6 @@ final class IntegerTypeRule implements RuleInterface, NativeCompilableInterface
 {
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         if ($this->isInt($value)) {
             return null;
         }

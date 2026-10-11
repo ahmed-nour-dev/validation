@@ -21,10 +21,6 @@ final class MimetypesRule implements RuleInterface
     {
         // This rule expects a file path or a SplFileInfo object if handled by the engine
         // In this package, we assume file validation is performed on paths or SplFileInfo
-        if ($value === null) {
-            return null;
-        }
-
         $path = $this->getPath($value);
         if ($path === null || !file_exists($path)) {
             return ['rule' => 'mimetypes', 'parameters' => ['values' => implode(', ', $this->types)]];

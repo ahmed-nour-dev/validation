@@ -12,10 +12,6 @@ final class ArrayRule implements RuleInterface, NativeCompilableInterface
 {
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         if (!is_array($value)) {
             return ['rule' => 'array'];
         }
@@ -27,7 +23,7 @@ final class ArrayRule implements RuleInterface, NativeCompilableInterface
     {
         $v = $context->valName;
 
-        return $context->emitError("{$v} !== null && !is_array({$v})", 'array');
+        return $context->emitError("!is_array({$v})", 'array');
     }
 
     public function isImplicitForNative(): bool

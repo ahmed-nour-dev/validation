@@ -15,10 +15,6 @@ final class MultipleOfRule implements RuleInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         if (!is_numeric($value)) {
             return ['rule' => 'multiple_of', 'parameters' => ['value' => $this->factor]];
         }

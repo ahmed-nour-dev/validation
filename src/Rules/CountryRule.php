@@ -30,8 +30,8 @@ final class CountryRule implements RuleInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null || !is_string($value)) {
-            return null;
+        if (!is_string($value)) {
+            return ['rule' => 'country'];
         }
 
         if (!in_array(strtoupper($value), self::COUNTRIES, true)) {

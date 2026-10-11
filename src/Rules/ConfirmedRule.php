@@ -11,10 +11,6 @@ final class ConfirmedRule implements RuleInterface
 {
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         $confirmationField = $field . '_confirmation';
         $confirmationValue = $context->getValue($confirmationField);
 

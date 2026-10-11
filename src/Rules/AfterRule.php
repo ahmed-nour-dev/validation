@@ -19,10 +19,6 @@ final class AfterRule implements RuleInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         $date = $this->parseDate($value);
         if ($date === null) {
             return ['rule' => 'date'];

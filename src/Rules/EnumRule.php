@@ -23,10 +23,6 @@ final class EnumRule implements RuleInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         if (!enum_exists($this->enumClass)) {
             return ['rule' => 'enum'];
         }

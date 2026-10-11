@@ -18,10 +18,6 @@ final class DifferentRule implements RuleInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         $otherValue = $context->getValue($this->otherField);
 
         if ($value === $otherValue) {

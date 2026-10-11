@@ -94,6 +94,7 @@ final class FieldDefinition
     public function nullable(): self
     {
         $this->nullable = true;
+        $this->rules[] = new \Vi\Validation\Rules\NullableRule();
         return $this;
     }
 

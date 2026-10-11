@@ -30,7 +30,7 @@ use ReflectionClass;
  */
 final class NativeCompiler
 {
-    public const COMPILER_VERSION = '2.0.0';
+    public const COMPILER_VERSION = '2.1.0';
 
     /**
      * Check whether every rule in the schema can be natively inlined.
@@ -204,7 +204,16 @@ final class NativeCompiler
         $emptyVar = '$empty_' . $index;
         foreach ($rules as $rule) {
             if ($rule instanceof NativeCompilableInterface && !$rule->isImplicitForNative()) {
-                $code .= "    {$emptyVar} = " . \Vi\Validation\Execution\Emptiness::nativeExpression($varName) . ";\n";
+                // Same presence semantics as ValidationContext::hasValue() (dot-notation paths).
+                $presence = strpos($name, '.') === false
+                    ? "array_key_exists({$nameLiteral}, \$data)"
+                    : "\\Vi\\Validation\\Execution\\DataHelper::has(\$data, {$nameLiteral})";
+                // `nullable` also skips a present null, for non-implicit rules only.
+                $skip = \Vi\Validation\Execution\Emptiness::nativeSkipExpression($varName, $presence);
+                if ($field->isNullable()) {
+                    $skip = "{$varName} === null || {$skip}";
+                }
+                $code .= "    {$emptyVar} = {$skip};\n";
                 break;
             }
         }
@@ -219,13 +228,6 @@ final class NativeCompiler
                 ? "array_key_exists({$nameLiteral}, \$data)"
                 : "\\Vi\\Validation\\Execution\\DataHelper::has(\$data, {$nameLiteral})";
             $code .= "{$indent}if ({$presence}) {\n";
-            $indent .= "    ";
-            $suffix = substr($indent, 0, -4) . "}\n" . $suffix;
-        }
-
-        // Handle nullable: skip rules if value is null
-        if ($field->isNullable()) {
-            $code .= "{$indent}if ({$varName} !== null) {\n";
             $indent .= "    ";
             $suffix = substr($indent, 0, -4) . "}\n" . $suffix;
         }

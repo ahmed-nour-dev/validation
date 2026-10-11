@@ -19,10 +19,6 @@ final class ExtensionsRule implements RuleInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         $extension = $this->getExtension($value);
 
         if ($extension === null || !in_array($extension, $this->extensions, true)) {

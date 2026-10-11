@@ -11,11 +11,7 @@ final class AsciiRule implements RuleInterface
 {
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null || !is_string($value)) {
-            return null;
-        }
-
-        if (mb_check_encoding($value, 'ASCII')) {
+        if (is_string($value) && mb_check_encoding($value, 'ASCII')) {
             return null;
         }
 

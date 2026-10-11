@@ -20,10 +20,6 @@ final class DigitsBetweenRule implements RuleInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         // Non-scalars (arrays, objects) are simply invalid; casting them throws
         // ("Array to string conversion"), where Laravel 13 returns a validation failure.
         if (!is_scalar($value)) {

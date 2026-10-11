@@ -449,7 +449,7 @@ $schema = Validator::schema()
     ->compile();
 ```
 
-> Note: rules added inside `when()` are skipped when the field's own value is empty/null (like most non-`required*` rules), so `when()` is for layering extra constraints onto a field that already has a base rule such as `required()` — it's not a way to make a field conditionally required. For that, use [`requiredIf()` / `requiredUnless()`](#-supported-rules) instead.
+> Note: rules added inside `when()` are skipped when the field is missing or its value is a blank string (like most non-`required*` rules; a present `null` or `[]` is validated, as in Laravel), so `when()` is for layering extra constraints onto a field that already has a base rule such as `required()` — it's not a way to make a field conditionally required. For that, use [`requiredIf()` / `requiredUnless()`](#-supported-rules) instead.
 
 ### 🛠 Supported Rules
 

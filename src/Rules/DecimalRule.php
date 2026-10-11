@@ -20,10 +20,6 @@ final class DecimalRule implements RuleInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null || $value === '') {
-            return null;
-        }
-
         if (!is_numeric($value)) {
             return ['rule' => 'decimal', 'parameters' => ['min' => (string)$this->min, 'max' => (string)$this->max]];
         }

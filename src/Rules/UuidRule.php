@@ -13,10 +13,6 @@ final class UuidRule implements RuleInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         if (!is_string($value)) {
             return ['rule' => 'uuid'];
         }

@@ -12,10 +12,6 @@ final class StringTypeRule implements RuleInterface, NativeCompilableInterface
 {
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         if (!is_string($value)) {
             return ['rule' => 'string'];
         }
@@ -27,7 +23,7 @@ final class StringTypeRule implements RuleInterface, NativeCompilableInterface
     {
         $v = $context->valName;
 
-        return $context->emitError("{$v} !== null && !is_string({$v})", 'string');
+        return $context->emitError("!is_string({$v})", 'string');
     }
 
     public function isImplicitForNative(): bool

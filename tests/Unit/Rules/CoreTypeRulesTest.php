@@ -46,10 +46,11 @@ class CoreTypeRulesTest extends TestCase
         $this->assertEquals(['rule' => 'numeric'], $result);
     }
 
-    public function testNumericRulePassesWithNull(): void
+    public function testNumericRuleFailsWithNull(): void
     {
+        // A present null is validated like any other value (Laravel); only `nullable` skips it.
         $rule = new NumericRule();
-        $this->assertNull($rule->validate(null, 'field', $this->createContext()));
+        $this->assertEquals(['rule' => 'numeric'], $rule->validate(null, 'field', $this->createContext()));
     }
 
     // BooleanRule Tests

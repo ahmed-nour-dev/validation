@@ -30,8 +30,8 @@ final class LanguageRule implements RuleInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null || !is_string($value)) {
-            return null;
+        if (!is_string($value)) {
+            return ['rule' => 'language'];
         }
 
         if (!in_array(strtolower($value), self::LANGUAGES, true)) {

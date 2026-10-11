@@ -22,12 +22,15 @@ final class EndsWithRule implements RuleInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
+        if (is_numeric($value)) {
+            $value = (string) $value;
         }
 
         if (!is_string($value)) {
-            return null;
+            return [
+                'rule' => 'ends_with',
+                'params' => ['values' => implode(', ', $this->values)],
+            ];
         }
 
         foreach ($this->values as $suffix) {

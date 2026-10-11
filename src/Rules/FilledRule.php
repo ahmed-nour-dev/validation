@@ -14,9 +14,9 @@ final class FilledRule implements RuleInterface
 {
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        // If the field is not present (null), the validation passes
+        // A missing key passes; a key that is present with null fails (Laravel: filled => required).
         if ($value === null) {
-            return null;
+            return $context->hasValue($field) ? ['rule' => 'filled'] : null;
         }
 
         // If the field is present but empty, fail validation

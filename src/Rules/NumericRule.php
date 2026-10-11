@@ -12,10 +12,6 @@ final class NumericRule implements RuleInterface, NativeCompilableInterface
 {
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
-        if ($value === null) {
-            return null;
-        }
-
         if (!is_numeric($value)) {
             return ['rule' => 'numeric'];
         }
@@ -27,7 +23,7 @@ final class NumericRule implements RuleInterface, NativeCompilableInterface
     {
         $v = $context->valName;
 
-        return $context->emitError("{$v} !== null && !is_numeric({$v})", 'numeric');
+        return $context->emitError("!is_numeric({$v})", 'numeric');
     }
 
     public function isImplicitForNative(): bool

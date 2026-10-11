@@ -27,7 +27,7 @@ final class MaxRule implements RuleInterface, NumericAwareInterface, NativeCompi
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
         if ($value === null) {
-            return null;
+            $value = '';
         }
 
         if (is_array($value)) {

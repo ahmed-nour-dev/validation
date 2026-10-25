@@ -55,6 +55,11 @@ final class NativeCompiler
         $unsupported = [];
 
         foreach ($schema->getFields() as $field) {
+            // A wildcard field expands against the payload; only ValidatorEngine does that.
+            if ($field->isWildcard()) {
+                $unsupported[] = $field->getName() . ':wildcard';
+            }
+
             // exclude*/exclusion marker rules are consumed into CompiledField's exclusion
             // flags and never appear in getRules(), so compileField() has no way to see
             // them; inlining this field would silently ignore the exclusion. Refuse instead.

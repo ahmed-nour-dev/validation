@@ -14,6 +14,13 @@ final class ValidationContext
 
     private ErrorCollector $errors;
 
+    /** @var list<string> */
+    private array $wildcardKeys = [];
+    private string $wildcardPattern = '';
+
+    /** @var array<string, array<string, mixed>> */
+    private array $wildcardValues = [];
+
     private ?DatabaseValidatorInterface $databaseValidator = null;
     private ?PasswordHasherInterface $passwordHasher = null;
 
@@ -47,8 +54,72 @@ final class ValidationContext
         $this->passwordHasher = $passwordHasher;
     }
 
+    /**
+     * Keys the current wildcard field's '*' segments matched ('items.*.sku' => 'items.3.sku'
+     * gives ['3']). Sibling references such as `same:items.*.other` have their '*' replaced by
+     * these in order, like Laravel's replaceAsterisksInParameters(). Empty outside wildcards.
+     *
+     * @param list<string> $keys
+     */
+    public function setWildcardKeys(array $keys, string $pattern = ''): void
+    {
+        $this->wildcardKeys = $keys;
+        $this->wildcardPattern = $pattern;
+    }
+
+    /**
+     * Every value a wildcard path ('items.*.id') addresses, keyed by concrete path. Expanded
+     * once per payload and memoized, so cross-element rules such as `distinct` don't re-scan
+     * the data for every element.
+     *
+     * @return array<string, mixed>
+     */
+    public function wildcardValues(string $pattern): array
+    {
+        if (!isset($this->wildcardValues[$pattern])) {
+            $values = [];
+            foreach (DataHelper::expand($this->data, $pattern) as [$path]) {
+                $values[$path] = DataHelper::get($this->data, $path);
+            }
+            $this->wildcardValues[$pattern] = $values;
+        }
+
+        return $this->wildcardValues[$pattern];
+    }
+
+    /**
+     * The wildcard rule key being expanded ('items.*.sku'), or '' for a plain field.
+     */
+    public function getWildcardPattern(): string
+    {
+        return $this->wildcardPattern;
+    }
+
+    /**
+     * Replace the '*' segments of a reference path with the current wildcard keys.
+     */
+    public function bind(string $field): string
+    {
+        if ($this->wildcardKeys === [] || strpos($field, '*') === false) {
+            return $field;
+        }
+
+        $i = 0;
+        $keys = $this->wildcardKeys;
+
+        return (string) preg_replace_callback(
+            '/\*/',
+            static function (array $m) use (&$i, $keys): string {
+                return $keys[$i++] ?? '*';
+            },
+            $field
+        );
+    }
+
     public function getValue(string $field): mixed
     {
+        $field = $this->bind($field);
+
         if (strpos($field, '.') === false) {
             return $this->data[$field] ?? null;
         }
@@ -58,6 +129,8 @@ final class ValidationContext
 
     public function hasValue(string $field): bool
     {
+        $field = $this->bind($field);
+
         if (strpos($field, '.') === false) {
             return array_key_exists($field, $this->data);
         }
@@ -81,6 +154,7 @@ final class ValidationContext
     public function setData(array $data): void
     {
         $this->data = $data;
+        $this->wildcardValues = [];
     }
 
     /**

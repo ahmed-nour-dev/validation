@@ -23,6 +23,12 @@ final class DistinctRule implements RuleInterface
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
+        // Laravel: on a wildcard attribute ('items.*.id') the value is compared to its
+        // siblings, i.e. every other element the pattern addresses.
+        if ($context->getWildcardPattern() !== '') {
+            return $this->isDuplicateOfSibling($value, $field, $context) ? ['rule' => 'distinct'] : null;
+        }
+
         if ($value === null || !is_array($value)) {
             return null;
         }
@@ -80,5 +86,26 @@ final class DistinctRule implements RuleInterface
         }
 
         return true;
+    }
+
+    private function isDuplicateOfSibling(mixed $value, string $field, ValidationContext $context): bool
+    {
+        if ($this->ignoreCase && is_string($value)) {
+            $value = strtolower($value);
+        }
+
+        foreach ($context->wildcardValues($context->getWildcardPattern()) as $path => $other) {
+            if ((string) $path === $field) {
+                continue;
+            }
+            if ($this->ignoreCase && is_string($other)) {
+                $other = strtolower($other);
+            }
+            if ($this->strict ? $other === $value : $other == $value) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

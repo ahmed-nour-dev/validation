@@ -13,7 +13,7 @@ Options for `run.php`:
 | Option | Default | Meaning |
 | :--- | :--- | :--- |
 | `--sizes=` | `1000,10000,100000` | Row counts (add `1000000` for a 1M-row run) |
-| `--scenarios=` | all | `user_import`, `order_lines`, `api_payload` |
+| `--scenarios=` | all | `user_import`, `order_lines`, `api_payload`, `wildcard_items` |
 | `--paths=` | all | `laravel`, `factory`, `engine`, `native` |
 | `--laravel-max=` | `10000` | Skip Laravel above this size. Its throughput is flat, so the largest measured rate is the reference for bigger sizes |
 | `--output=` / `--markdown=` | `benchmarks/results/latest.*` | Where to write results (git-ignored) |
@@ -27,6 +27,7 @@ Options for `run.php`:
 | `user_import` | CSV-style user import: `required\|string\|min\|max`, `email`, `nullable\|integer\|min\|max`, `boolean`, `nullable\|url`, `alpha_dash` |
 | `order_lines` | ETL order lines: integers, `alpha_dash` SKUs, `numeric` prices, `in:` currencies, `nullable\|date_format`, optional coupon |
 | `api_payload` | Nested JSON API payload: dot paths up to 3 levels, `regex`, `in`, `required_if`, `digits_between`, `array\|max` |
+| `wildcard_items` | Order with 5 line items: `items.*.sku`, nested `items.*.tags.*`, and a sibling reference `lte:items.*.price`. Always runs on the engine (wildcard schemas are not natively compiled), so the `native` path is skipped |
 
 **Paths** are the ways of validating each dataset:
 

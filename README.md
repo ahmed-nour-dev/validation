@@ -548,9 +548,6 @@ rule it records:
 
 Known, currently-intentional divergences from Laravel (see the matrix for full detail on each):
 
-- **`accepted_if`/`declined_if`/`exclude_if`/`exclude_unless`/`missing_if`/`missing_unless`**
-  only support a single dependent value, where Laravel supports several
-  (`accepted_if:field,v1,v2`).
 - **`exists`/`unique`** don't support the `[field]` bracket syntax for a per-row dynamic ignore
   id, or an Eloquent model class as the table parameter. In Laravel they're backed by Laravel's
   own presence verifier automatically. Standalone, call `setDatabaseValidator()`; without one they

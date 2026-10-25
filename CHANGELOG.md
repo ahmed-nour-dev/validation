@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-10-25
+
+Documentation and package metadata only; no code changes.
+
+### Changed
+- README now opens with a new tagline and a table mapping the Packagist name (`ahmednour/validation`),
+  the GitHub repository (`ahmed-nour-dev/validation`), the `Vi\Validation` namespace and the Laravel
+  facade/provider/config names.
+- `composer.json`: refreshed `description`, added `keywords` and `homepage`.
+
 ## [0.2.0] - 2026-10-11
 
 This release changes validation results. Payloads that send an explicit `null` for a field without

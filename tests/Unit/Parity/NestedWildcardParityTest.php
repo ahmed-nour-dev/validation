@@ -175,8 +175,20 @@ class NestedWildcardParityTest extends ParityTestCase
         $this->assertParity(['rows.*.y' => 'required_without_all:rows.*.x,rows.*.type'], $data);
         $this->assertParity(['rows.*.y' => 'prohibited_if:rows.*.type,a'], $data);
         $this->assertParity(['rows.*.y' => 'prohibited_unless:rows.*.type,a'], $data);
-        $this->assertParity(['rows.*.y' => 'present_with:rows.*.x'], $data);
         $this->assertParity(['rows.*.y' => 'exclude_if:rows.*.type,a|required'], $data);
+    }
+
+    public function testPresentWithReferencesTheSameElement(): void
+    {
+        if (!method_exists(\Illuminate\Validation\Validator::class, 'validatePresentWith')) {
+            self::markTestSkipped("The installed Laravel version has no 'present_with' rule.");
+        }
+
+        $this->assertParity(['rows.*.y' => 'present_with:rows.*.x'], ['rows' => [
+            ['x' => 'present', 'y' => null],
+            ['x' => null],
+            ['x' => 'z'],
+        ]]);
     }
 
     public function testConfirmedAndComparisonSiblings(): void

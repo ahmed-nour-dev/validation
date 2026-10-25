@@ -178,8 +178,8 @@ Parity is verified against the real `illuminate/validation` on Laravel 10.x / 11
 
 | Rule | Engine | Native | Parity | Laravel | Dependencies | Notes |
 | :--- | :---: | :---: | :--- | :--- | :--- | :--- |
-| `exists` | yes | no | 🟡 partial | all | database | Full table/column/connection/extra-where grammar, Rule::exists() objects and array values (every value must exist). FastValidationServiceProvider backs it with Laravel's own presence verifier; without a database validator the rule throws (fails closed) instead of passing. Not supported: an Eloquent model class as the table parameter. |
-| `unique` | yes | no | 🟡 partial | all | database | Same wiring as exists, plus ignore-id/id-column/extra-where grammar and Rule::unique()->ignore(). Not supported: the `[field]` bracket syntax for a per-row dynamic ignore id, and an Eloquent model class as the table parameter. |
+| `exists` | yes | no | 🟡 partial | all | database | Full table/column/connection/extra-where grammar, Rule::exists() objects and array values (every value must exist). FastValidationServiceProvider backs it with Laravel's own presence verifier; without a database validator the rule throws (fails closed) instead of passing. An Eloquent model class as the table (exists:App\Models\User) is resolved to its table and connection via Laravel's own Model; standalone without illuminate/database it throws a clear exception. |
+| `unique` | yes | no | 🟡 partial | all | database | Same wiring as exists, plus ignore-id/id-column/extra-where grammar and Rule::unique()->ignore(), the `[field]` bracket syntax (per-row dynamic ignore id, resolved from the row at validation time; such rules are not batched) and Eloquent model classes as the table (the model's key name overrides the id-column parameter, as in Laravel). Parity-tested against Laravel on in-memory SQLite. |
 
 ## Auth
 

@@ -218,36 +218,71 @@ final class LaravelRuleParser
     /**
      * Build a UniqueRule from Laravel's `unique:table,column,ignore,idColumn,extra1,value1,...` grammar.
      *
-     * Not supported: the `[field]` bracket syntax for a per-row dynamic ignore id, and referencing an
-     * Eloquent model class as the table. Both require resolving values at validate-time rather than
-     * compile-time and are out of scope for this parser.
+     * A `[field]` ignore id is resolved from the row at validation time; an Eloquent model class as the
+     * table is resolved to its table, connection and key column.
      *
      * @param class-string<RuleInterface> $class
      * @param list<string> $params
      */
     private function buildUniqueRule(string $class, string $field, array $params): RuleInterface
     {
-        [$connection, $table] = $this->parseTable($params[0]);
+        [$connection, $table, $modelKey] = $this->parseTable($params[0]);
         $column = $this->resolveColumn($params, $field);
 
-        $ignoreId = isset($params[2]) ? $this->prepareUniqueId($params[2]) : null;
-        $idColumn = $params[3] ?? 'id';
+        $ignoreId = null;
+        $ignoreField = null;
+        if (isset($params[2])) {
+            if (preg_match('/\[(.*)\]/', $params[2], $matches) === 1) {
+                $ignoreField = $matches[1];
+            } else {
+                $ignoreId = $this->prepareUniqueId($params[2]);
+            }
+        }
+
+        // Like Laravel, a model's key name wins over the idColumn parameter.
+        $idColumn = $modelKey ?? $params[3] ?? 'id';
         $extra = $this->parseExtraConditions(array_slice($params, 4));
 
-        return new $class($table, $column, $ignoreId, $idColumn, $extra, $connection);
+        return new $class($table, $column, $ignoreId, $idColumn, $extra, $connection, $ignoreField);
     }
 
     /**
-     * @return array{0: string|null, 1: string}
+     * Split `connection.table` and resolve an Eloquent model class to its table, as Laravel does.
+     *
+     * @return array{0: string|null, 1: string, 2: string|null} connection, table, model key column
      */
     private function parseTable(string $table): array
     {
+        $connection = null;
         if (str_contains($table, '.')) {
             [$connection, $table] = explode('.', $table, 2);
-            return [$connection, $table];
         }
 
-        return [null, $table];
+        if (!str_contains($table, '\\') || !class_exists($table)) {
+            return [$connection, $table, null];
+        }
+
+        $modelClass = 'Illuminate\\Database\\Eloquent\\Model';
+        if (!class_exists($modelClass)) {
+            throw new UnsupportedRuleException(
+                "Cannot resolve [{$table}] to a table: using a model class in exists/unique requires "
+                . 'illuminate/database. Pass the table name instead, or install Laravel\'s database component.'
+            );
+        }
+
+        if (!is_a($table, $modelClass, true)) {
+            return [$connection, $table, null];
+        }
+
+        $model = new $table();
+        $table = $model->getTable();
+        $connection ??= $model->getConnectionName();
+
+        if ($connection !== null && str_contains($table, '.') && str_starts_with($table, $connection)) {
+            $connection = null;
+        }
+
+        return [$connection, $table, $model->getKeyName()];
     }
 
     /**

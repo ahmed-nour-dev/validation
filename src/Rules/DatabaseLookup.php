@@ -19,7 +19,8 @@ final class DatabaseLookup
         public readonly mixed $ignoreId = null,
         public readonly string $idColumn = 'id',
         public readonly array $extraConstraints = [],
-        public readonly ?string $connection = null
+        public readonly ?string $connection = null,
+        public readonly bool $dynamicIgnore = false
     ) {
     }
 
@@ -39,6 +40,11 @@ final class DatabaseLookup
 
     public function key(): ?string
     {
+        // A `[field]` ignore id differs per row, so such a lookup can't share one query.
+        if ($this->dynamicIgnore) {
+            return null;
+        }
+
         return self::keyFor($this->table, $this->column, $this->ignoreId, $this->idColumn, $this->extraConstraints, $this->connection);
     }
 

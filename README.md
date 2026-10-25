@@ -548,10 +548,10 @@ rule it records:
 
 Known, currently-intentional divergences from Laravel (see the matrix for full detail on each):
 
-- **`exists`/`unique`** don't support the `[field]` bracket syntax for a per-row dynamic ignore
-  id, or an Eloquent model class as the table parameter. In Laravel they're backed by Laravel's
-  own presence verifier automatically. Standalone, call `setDatabaseValidator()`; without one they
-  throw instead of silently passing.
+- **`exists`/`unique`** are backed by Laravel's own presence verifier automatically (including the
+  `[field]` per-row ignore id and Eloquent model classes as the table). Standalone, call
+  `setDatabaseValidator()`; without one they throw instead of silently passing. Model classes need
+  `illuminate/database`.
 - **`current_password`** always uses the default guard.
 
 **Laravel rule objects work too:** `Rule::in()`, `Rule::unique()->ignore()`, `Rule::exists()->where()`,

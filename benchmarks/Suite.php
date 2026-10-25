@@ -104,16 +104,23 @@ final class Suite
     }
 
     /**
-     * Deterministic rows; roughly 1 in 10 is invalid in some way.
+     * Deterministic rows; roughly 1 in 10 is invalid in some way. $invalidity overrides that:
+     * 'valid' makes every row valid, 'invalid' makes every row invalid (used by compare.php).
      *
+     * @param 'mixed'|'valid'|'invalid' $invalidity
      * @return Generator<int, array<string, mixed>>
      */
-    public static function rows(string $scenario, int $count): Generator
+    public static function rows(string $scenario, int $count, string $invalidity = 'mixed'): Generator
     {
         mt_srand(crc32($scenario));
 
         for ($i = 0; $i < $count; $i++) {
-            $bad = mt_rand(1, 10) === 1;
+            $bad = mt_rand(1, 10) === 1; // always drawn, so the 'mixed' sequence is unchanged
+            $bad = match ($invalidity) {
+                'valid' => false,
+                'invalid' => true,
+                default => $bad,
+            };
             yield match ($scenario) {
                 'user_import' => [
                     'name' => $bad ? 'X' : 'User ' . $i,

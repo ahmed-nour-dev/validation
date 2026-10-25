@@ -1,0 +1,385 @@
+{
+    "environment": {
+        "php": "8.5.9",
+        "laravel_validation": "v13.38.0",
+        "vi_validation_compiler": "2.2.0",
+        "os": "Linux 6.18.33.2-microsoft-standard-WSL2",
+        "cpu": "Intel(R) Core(TM) i7-10870H CPU @ 2.20GHz",
+        "cpu_count": 16,
+        "memory_bytes": 6211395584,
+        "opcache": false,
+        "jit": false,
+        "sapi": "cli",
+        "timestamp": "2026-10-25T10:30:45+00:00",
+        "packages": {
+            "illuminate/validation": "v13.38.0",
+            "ahmednour/validation": "dev-ahmed-nour-dev/p2-head-to-head-benchmark-against-sandermuller-a",
+            "sandermuller/laravel-fluent-validation": "1.35.0",
+            "yorcreative/data-validation": "v1.1.0"
+        }
+    },
+    "rows": 2000,
+    "repeat": 3,
+    "results": [
+        {
+            "scenario": "flat",
+            "data": "valid",
+            "library": "laravel",
+            "rows": 2000,
+            "rows_per_sec": 3061,
+            "peak_memory_bytes": 39856,
+            "failures": 0
+        },
+        {
+            "scenario": "flat",
+            "data": "valid",
+            "library": "vi_factory",
+            "rows": 2000,
+            "rows_per_sec": 53408,
+            "peak_memory_bytes": 5936,
+            "failures": 0
+        },
+        {
+            "scenario": "flat",
+            "data": "valid",
+            "library": "vi_compiled",
+            "rows": 2000,
+            "rows_per_sec": 261113,
+            "peak_memory_bytes": 3744,
+            "failures": 0
+        },
+        {
+            "scenario": "flat",
+            "data": "valid",
+            "library": "sandermuller",
+            "rows": 2000,
+            "rows_per_sec": 2788,
+            "peak_memory_bytes": 43864,
+            "failures": 0
+        },
+        {
+            "scenario": "flat",
+            "data": "valid",
+            "library": "yorcreative",
+            "rows": 2000,
+            "rows_per_sec": 33273,
+            "peak_memory_bytes": 7480,
+            "failures": 0
+        },
+        {
+            "scenario": "flat",
+            "data": "invalid",
+            "library": "laravel",
+            "rows": 2000,
+            "rows_per_sec": 2384,
+            "peak_memory_bytes": 63024,
+            "failures": 2000
+        },
+        {
+            "scenario": "flat",
+            "data": "invalid",
+            "library": "vi_factory",
+            "rows": 2000,
+            "rows_per_sec": 47528,
+            "peak_memory_bytes": 6768,
+            "failures": 2000
+        },
+        {
+            "scenario": "flat",
+            "data": "invalid",
+            "library": "vi_compiled",
+            "rows": 2000,
+            "rows_per_sec": 229080,
+            "peak_memory_bytes": 5896,
+            "failures": 2000
+        },
+        {
+            "scenario": "flat",
+            "data": "invalid",
+            "library": "sandermuller",
+            "rows": 2000,
+            "rows_per_sec": 2162,
+            "peak_memory_bytes": 194768,
+            "failures": 2000
+        },
+        {
+            "scenario": "flat",
+            "data": "invalid",
+            "library": "yorcreative",
+            "rows": 2000,
+            "rows_per_sec": 28665,
+            "peak_memory_bytes": 8648,
+            "failures": 2000
+        },
+        {
+            "scenario": "nested",
+            "data": "valid",
+            "library": "laravel",
+            "rows": 2000,
+            "rows_per_sec": 2928,
+            "peak_memory_bytes": 41792,
+            "failures": 0
+        },
+        {
+            "scenario": "nested",
+            "data": "valid",
+            "library": "vi_factory",
+            "rows": 2000,
+            "rows_per_sec": 38538,
+            "peak_memory_bytes": 5416,
+            "failures": 0
+        },
+        {
+            "scenario": "nested",
+            "data": "valid",
+            "library": "vi_compiled",
+            "rows": 2000,
+            "rows_per_sec": 200483,
+            "peak_memory_bytes": 4136,
+            "failures": 0
+        },
+        {
+            "scenario": "nested",
+            "data": "valid",
+            "library": "sandermuller",
+            "rows": 2000,
+            "rows_per_sec": 2713,
+            "peak_memory_bytes": 43800,
+            "failures": 0
+        },
+        {
+            "scenario": "nested",
+            "data": "valid",
+            "library": "yorcreative",
+            "rows": 2000,
+            "rows_per_sec": 28489,
+            "peak_memory_bytes": 8872,
+            "failures": 0
+        },
+        {
+            "scenario": "nested",
+            "data": "invalid",
+            "library": "laravel",
+            "rows": 2000,
+            "rows_per_sec": 2706,
+            "peak_memory_bytes": 43872,
+            "failures": 2000
+        },
+        {
+            "scenario": "nested",
+            "data": "invalid",
+            "library": "vi_factory",
+            "rows": 2000,
+            "rows_per_sec": 37445,
+            "peak_memory_bytes": 6456,
+            "failures": 2000
+        },
+        {
+            "scenario": "nested",
+            "data": "invalid",
+            "library": "vi_compiled",
+            "rows": 2000,
+            "rows_per_sec": 203816,
+            "peak_memory_bytes": 4712,
+            "failures": 2000
+        },
+        {
+            "scenario": "nested",
+            "data": "invalid",
+            "library": "sandermuller",
+            "rows": 2000,
+            "rows_per_sec": 2555,
+            "peak_memory_bytes": 44248,
+            "failures": 2000
+        },
+        {
+            "scenario": "nested",
+            "data": "invalid",
+            "library": "yorcreative",
+            "rows": 2000,
+            "rows_per_sec": 27403,
+            "peak_memory_bytes": 8872,
+            "failures": 2000
+        },
+        {
+            "scenario": "wildcard",
+            "data": "valid",
+            "library": "laravel",
+            "rows": 2000,
+            "rows_per_sec": 680,
+            "peak_memory_bytes": 57720,
+            "failures": 0
+        },
+        {
+            "scenario": "wildcard",
+            "data": "valid",
+            "library": "vi_factory",
+            "rows": 2000,
+            "rows_per_sec": 14083,
+            "peak_memory_bytes": 10056,
+            "failures": 0
+        },
+        {
+            "scenario": "wildcard",
+            "data": "valid",
+            "library": "vi_compiled",
+            "rows": 2000,
+            "rows_per_sec": 17515,
+            "peak_memory_bytes": 8424,
+            "failures": 0
+        },
+        {
+            "scenario": "wildcard",
+            "data": "valid",
+            "library": "sandermuller",
+            "rows": 2000,
+            "rows_per_sec": 961,
+            "peak_memory_bytes": 52136,
+            "failures": 0
+        },
+        {
+            "scenario": "wildcard",
+            "data": "valid",
+            "library": "yorcreative",
+            "rows": 2000,
+            "rows_per_sec": 9030,
+            "peak_memory_bytes": 25624,
+            "failures": 0
+        },
+        {
+            "scenario": "wildcard",
+            "data": "invalid",
+            "library": "laravel",
+            "rows": 2000,
+            "rows_per_sec": 647,
+            "peak_memory_bytes": 56704,
+            "failures": 2000
+        },
+        {
+            "scenario": "wildcard",
+            "data": "invalid",
+            "library": "vi_factory",
+            "rows": 2000,
+            "rows_per_sec": 13901,
+            "peak_memory_bytes": 11064,
+            "failures": 2000
+        },
+        {
+            "scenario": "wildcard",
+            "data": "invalid",
+            "library": "vi_compiled",
+            "rows": 2000,
+            "rows_per_sec": 16984,
+            "peak_memory_bytes": 9432,
+            "failures": 2000
+        },
+        {
+            "scenario": "wildcard",
+            "data": "invalid",
+            "library": "sandermuller",
+            "rows": 2000,
+            "rows_per_sec": 910,
+            "peak_memory_bytes": 53600,
+            "failures": 2000
+        },
+        {
+            "scenario": "wildcard",
+            "data": "invalid",
+            "library": "yorcreative",
+            "rows": 2000,
+            "rows_per_sec": 8750,
+            "peak_memory_bytes": 25624,
+            "failures": 2000
+        },
+        {
+            "scenario": "wildcard_bulk",
+            "data": "valid",
+            "library": "laravel",
+            "rows": 50,
+            "rows_per_sec": 19,
+            "peak_memory_bytes": 939032,
+            "failures": 0
+        },
+        {
+            "scenario": "wildcard_bulk",
+            "data": "valid",
+            "library": "vi_factory",
+            "rows": 50,
+            "rows_per_sec": 542,
+            "peak_memory_bytes": 304240,
+            "failures": 0
+        },
+        {
+            "scenario": "wildcard_bulk",
+            "data": "valid",
+            "library": "vi_compiled",
+            "rows": 50,
+            "rows_per_sec": 542,
+            "peak_memory_bytes": 302608,
+            "failures": 0
+        },
+        {
+            "scenario": "wildcard_bulk",
+            "data": "valid",
+            "library": "sandermuller",
+            "rows": 50,
+            "rows_per_sec": 29,
+            "peak_memory_bytes": 351216,
+            "failures": 0
+        },
+        {
+            "scenario": "wildcard_bulk",
+            "data": "valid",
+            "library": "yorcreative",
+            "rows": 50,
+            "rows_per_sec": 180,
+            "peak_memory_bytes": 814584,
+            "failures": 0
+        },
+        {
+            "scenario": "wildcard_bulk",
+            "data": "invalid",
+            "library": "laravel",
+            "rows": 50,
+            "rows_per_sec": 19,
+            "peak_memory_bytes": 939024,
+            "failures": 50
+        },
+        {
+            "scenario": "wildcard_bulk",
+            "data": "invalid",
+            "library": "vi_factory",
+            "rows": 50,
+            "rows_per_sec": 519,
+            "peak_memory_bytes": 305240,
+            "failures": 50
+        },
+        {
+            "scenario": "wildcard_bulk",
+            "data": "invalid",
+            "library": "vi_compiled",
+            "rows": 50,
+            "rows_per_sec": 530,
+            "peak_memory_bytes": 211792,
+            "failures": 50
+        },
+        {
+            "scenario": "wildcard_bulk",
+            "data": "invalid",
+            "library": "sandermuller",
+            "rows": 50,
+            "rows_per_sec": 30,
+            "peak_memory_bytes": 175664,
+            "failures": 50
+        },
+        {
+            "scenario": "wildcard_bulk",
+            "data": "invalid",
+            "library": "yorcreative",
+            "rows": 50,
+            "rows_per_sec": 175,
+            "peak_memory_bytes": 814576,
+            "failures": 50
+        }
+    ]
+}

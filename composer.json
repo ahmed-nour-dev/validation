@@ -27,6 +27,12 @@
         "symfony/uid": "^6.0|^7.0"
     },
 
+    "scripts": {
+        "bench:compare": [
+            "composer install --working-dir=benchmarks/comparison --no-interaction",
+            "@php benchmarks/compare.php"
+        ]
+    },
     "extra": {
         "laravel": {
             "providers": [

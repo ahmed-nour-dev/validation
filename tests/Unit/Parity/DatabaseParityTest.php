@@ -155,6 +155,65 @@ class DatabaseParityTest extends ParityTestCase
         $this->assertDbParity(['ids' => 'array|exists:users,id'], ['ids' => [1, 99]]);
     }
 
+    public function testUniqueWithDynamicFieldIgnoreId(): void
+    {
+        // [id] is read from the row being validated.
+        foreach ([1, 2, 99, '1', null] as $id) {
+            $this->assertDbParity(
+                ['email' => 'unique:users,email,[id]', 'id' => 'nullable'],
+                ['email' => 'ada@example.com', 'id' => $id]
+            );
+        }
+
+        $this->assertDbParity(
+            ['email' => 'unique:users,email,[user_id],id,status,active', 'user_id' => 'nullable'],
+            ['email' => 'ada@example.com', 'user_id' => 1]
+        );
+        $this->assertDbParity(
+            ['email' => 'unique:users,email,[user.id]', 'user' => 'array'],
+            ['email' => 'ada@example.com', 'user' => ['id' => 1]]
+        );
+        $this->assertDbParity(
+            ['email' => 'unique:users,email,[id]'],
+            ['email' => 'ada@example.com']
+        );
+    }
+
+    public function testUniqueDynamicIgnoreIdIsResolvedPerRow(): void
+    {
+        $factory = new \Vi\Validation\Laravel\FastValidatorFactory();
+        $factory->setDatabaseValidator(new \Vi\Validation\Laravel\PresenceVerifierDatabaseValidator(
+            new DatabasePresenceVerifier($this->capsule()->getDatabaseManager())
+        ));
+
+        $rows = [
+            ['id' => 1, 'email' => 'ada@example.com'],
+            ['id' => 2, 'email' => 'ada@example.com'],
+        ];
+        $wrapper = $factory->make($rows[0], ['email' => 'unique:users,email,[id]']);
+        $wrapper->passes();
+        $validator = $wrapper->getSchemaValidator();
+
+        self::assertTrue($validator->validate($rows[0])->isValid());
+        self::assertFalse($validator->validate($rows[1])->isValid());
+    }
+
+    public function testModelClassAsTable(): void
+    {
+        $this->capsule()->getConnection()->statement('create table people (pk integer primary key, email text)');
+        $this->capsule()->getConnection()->table('people')->insert(['pk' => 7, 'email' => 'p@example.com']);
+
+        $model = Fixtures\PersonModel::class;
+
+        foreach (["exists:{$model},email", "unique:{$model},email", "unique:{$model},email,7", "unique:{$model},email,8,id"] as $rule) {
+            foreach (['p@example.com', 'q@example.com'] as $email) {
+                $this->assertDbParity(['email' => $rule], ['email' => $email]);
+            }
+        }
+
+        $this->assertDbParity(['email' => [\Illuminate\Validation\Rule::unique($model)->ignore(7, 'pk')]], ['email' => 'p@example.com']);
+    }
+
     public function testDatabaseRulesFailClosedWithoutADatabaseValidator(): void
     {
         foreach (['exists:users,email', 'unique:users,email'] as $rule) {

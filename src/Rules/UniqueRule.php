@@ -16,12 +16,16 @@ final class UniqueRule implements RuleInterface
     private ?string $connection;
     /** @var array<string, mixed> */
     private array $extraConstraints;
+    private ?string $ignoreIdField;
 
     /**
      * @param array<string, mixed> $extraConstraints
+     * @param string|null $ignoreIdField Laravel's `[field]` syntax: name of the row field holding the id
+     *                                   to ignore, resolved at validation time (overrides $ignoreId)
      */
-    public function __construct(string $table, string $column = 'id', mixed $ignoreId = null, string $idColumn = 'id', array $extraConstraints = [], ?string $connection = null)
+    public function __construct(string $table, string $column = 'id', mixed $ignoreId = null, string $idColumn = 'id', array $extraConstraints = [], ?string $connection = null, ?string $ignoreIdField = null)
     {
+        $this->ignoreIdField = $ignoreIdField;
         $this->table = $table;
         $this->column = $column;
         $this->ignoreId = $ignoreId;
@@ -32,7 +36,7 @@ final class UniqueRule implements RuleInterface
 
     public function lookup(): DatabaseLookup
     {
-        return new DatabaseLookup($this->table, $this->column, $this->ignoreId, $this->idColumn, $this->extraConstraints, $this->connection);
+        return new DatabaseLookup($this->table, $this->column, $this->ignoreId, $this->idColumn, $this->extraConstraints, $this->connection, $this->ignoreIdField !== null);
     }
 
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
@@ -52,10 +56,38 @@ final class UniqueRule implements RuleInterface
             );
         }
 
-        if (!$dbValidator->unique($this->table, $this->column, $value, $this->ignoreId, $this->idColumn, $this->extraConstraints, $this->connection)) {
+        $ignoreId = $this->ignoreIdField !== null
+            ? $this->resolveIgnoreId($context->getValue($this->ignoreIdField))
+            : $this->ignoreId;
+
+        if (!$dbValidator->unique($this->table, $this->column, $value, $ignoreId, $this->idColumn, $this->extraConstraints, $this->connection)) {
             return ['rule' => 'unique'];
         }
 
         return null;
+    }
+
+    /**
+     * Normalise a row value the way Laravel's prepareUniqueId() does for `[field]` ids.
+     */
+    private function resolveIgnoreId(mixed $id): mixed
+    {
+        if (!is_scalar($id)) {
+            return null;
+        }
+
+        if (is_string($id)) {
+            if (strtolower($id) === 'null') {
+                return null;
+            }
+
+            $id = stripslashes($id);
+        }
+
+        if (filter_var($id, FILTER_VALIDATE_INT) !== false) {
+            return (int) $id;
+        }
+
+        return $id;
     }
 }

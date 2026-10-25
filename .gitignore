@@ -20,6 +20,8 @@ log.txt
 # Per-run benchmark output (the committed reference lives in benchmarks/results/reference.*)
 /benchmarks/results/latest.*
 /benchmarks/results/regression.json
+/benchmarks/comparison/vendor
+/benchmarks/comparison/composer.lock
 
 # IDE / tool state and caches
 /.qoder

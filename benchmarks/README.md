@@ -51,6 +51,24 @@ Options for `run.php`:
 - The environment is recorded in the JSON: PHP and Laravel versions, compiler version, OS, CPU model and count, RAM, OPcache/JIT, SAPI, and timestamp.
 - For CLI runs with OPcache/JIT, pass e.g. `php -d opcache.enable_cli=1 -d opcache.jit=tracing benchmarks/run.php`.
 
+## Head-to-head comparison
+
+```bash
+composer bench:compare      # installs benchmarks/comparison/ (PHP >= 8.3), then runs the whole table
+# or: composer install --working-dir=benchmarks/comparison && php benchmarks/compare.php
+```
+
+`compare.php` runs the same rows through Laravel's validator, ahmednour/validation (`FastValidator::make()` per row, and a reused compiled schema, native where the rules allow), `sandermuller/laravel-fluent-validation` (`RuleSet::from($rules)->validate($row)`, string rules) and `yorcreative/data-validation` (`Validator::make()->validate()`), on **valid** and **invalid** data. It reports best-of-3 rows/s, the speedup over Laravel, and peak memory added. The competitors live in their own `benchmarks/comparison/composer.json` because they need PHP >= 8.3 / Laravel >= 12, so the library's own requirements stay untouched. Their versions are pinned there and printed in the output.
+
+| Scenario | Shape |
+| :--- | :--- |
+| `flat` | the `user_import` rows |
+| `nested` | the `api_payload` rows (dot paths up to 3 levels, `required_if`) |
+| `wildcard` | the `wildcard_items` rows: 5 items per payload, `items.*.sku`, `items.*.tags.*` |
+| `wildcard_bulk` | one payload of 200 items: the shape wildcard-optimised libraries advertise |
+
+Every library must validate the same way, so the rules are the subset all four support (`yorcreative` has the smallest rule set): `alpha_dash` becomes an equivalent `regex`, `digits_between` becomes `digits`, and `lte:items.*.price` becomes `min:0`. A library whose failure count differs from Laravel's is marked `≠` in the table, and its rate must not be compared. Options: `--rows=` (default 2000), `--repeat=` (3), `--scenarios=`, `--output=`, `--markdown=`. Results are committed as [`results/comparison.md`](results/comparison.md) / [`results/comparison.json`](results/comparison.json).
+
 ## Results
 
 - [`results/reference.md`](results/reference.md) / [`results/reference.json`](results/reference.json) hold the committed reference run. The README's "Performance at a Glance" table is generated from it.

@@ -1,6 +1,8 @@
 {
     "name": "ahmednour/validation",
-    "description": "High-performance PHP validation library optimized for large datasets with Laravel integration.",
+    "description": "Fast compiled PHP validation library: Laravel-compatible rule strings, native code generation and streaming for large datasets.",
+    "keywords": ["validation", "validator", "fast", "compiled", "laravel", "performance", "streaming", "octane"],
+    "homepage": "https://github.com/ahmed-nour-dev/validation",
     "type": "library",
     "license": "MIT",
     "require": {

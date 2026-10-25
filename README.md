@@ -1,6 +1,13 @@
 # ahmednour/validation 🚀
 
-> **The High-Performance PHP Validation Library**
+> **Fast, compiled PHP validation — Laravel-rule compatible, built for large datasets**
+
+| Where | Name |
+| :--- | :--- |
+| Packagist / Composer | `ahmednour/validation` (`composer require ahmednour/validation`) |
+| GitHub repository | `ahmed-nour-dev/validation` |
+| PHP namespace | `Vi\Validation` |
+| Laravel | facade `FastValidator`, provider `FastValidationServiceProvider`, config `config/fast-validation.php` |
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/ahmednour/validation.svg?style=flat-square)](https://packagist.org/packages/ahmednour/validation)
 [![Total Downloads](https://img.shields.io/packagist/dt/ahmednour/validation.svg?style=flat-square)](https://packagist.org/packages/ahmednour/validation)

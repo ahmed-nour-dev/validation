@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Vi\Validation\Rules;
 
+use Vi\Validation\Compilation\NativeCompilationContext;
 use Vi\Validation\Execution\ValidationContext;
 
 #[RuleName(RuleId::NOT_IN)]
-final class NotInRule implements RuleInterface
+final class NotInRule implements RuleInterface, NativeCompilableInterface
 {
     /** @var list<string> */
     private array $values;
@@ -56,5 +57,37 @@ final class NotInRule implements RuleInterface
         }
 
         return null;
+    }
+
+    public function compileNative(NativeCompilationContext $context): string
+    {
+        $v = $context->valName;
+        $list = NativeCompilationContext::literal($this->values);
+        $i = $context->indent;
+        $scalar = "(is_scalar({$v}) || {$v} instanceof \\Stringable)";
+
+        if (!$this->arrayContext) {
+            // An array never matches `in`, so `not_in` passes it.
+            return $context->emitError("({$scalar} && in_array((string) {$v}, {$list}, true))", 'not_in');
+        }
+
+        // With an `array` rule on the field a non-empty array fails only when every element is in the list.
+        return "{$i}\$notin_bad = false;\n"
+            . "{$i}if (is_array({$v})) {\n"
+            . "{$i}    if ({$v} !== []) {\n"
+            . "{$i}        \$notin_bad = true;\n"
+            . "{$i}        foreach ({$v} as \$notin_item) {\n"
+            . "{$i}            if (!is_scalar(\$notin_item) || !in_array((string) \$notin_item, {$list}, true)) { \$notin_bad = false; break; }\n"
+            . "{$i}        }\n"
+            . "{$i}    }\n"
+            . "{$i}} elseif ({$scalar}) {\n"
+            . "{$i}    \$notin_bad = in_array((string) {$v}, {$list}, true);\n"
+            . "{$i}}\n"
+            . $context->emitError('$notin_bad', 'not_in');
+    }
+
+    public function isImplicitForNative(): bool
+    {
+        return false;
     }
 }

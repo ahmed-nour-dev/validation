@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Vi\Validation\Rules;
 
+use Vi\Validation\Compilation\NativeCompilationContext;
 use Vi\Validation\Execution\ValidationContext;
 
 #[RuleName(RuleId::DIGITS)]
-final class DigitsRule implements RuleInterface
+final class DigitsRule implements RuleInterface, NativeCompilableInterface
 {
     private int $length;
 
@@ -46,5 +47,22 @@ final class DigitsRule implements RuleInterface
         }
 
         return null;
+    }
+
+    public function compileNative(NativeCompilationContext $context): string
+    {
+        $v = $context->valName;
+        $length = NativeCompilationContext::literal($this->length);
+
+        return $context->emitError(
+            "(!is_scalar({$v}) || !ctype_digit((string) {$v}) || strlen((string) {$v}) !== {$length})",
+            'digits',
+            "['digits' => {$length}]"
+        );
+    }
+
+    public function isImplicitForNative(): bool
+    {
+        return false;
     }
 }

@@ -39,7 +39,7 @@ final class SchemaDiagnosticsTest extends TestCase
     {
         $schema = Validator::fromRules([
             'email' => 'required|email',
-            'role' => 'required|in:admin,secret-internal-role',
+            'role' => 'required|uppercase',
             'nick' => 'sometimes|nullable|string',
         ]);
 
@@ -60,16 +60,16 @@ final class SchemaDiagnosticsTest extends TestCase
         $this->assertSame(['sometimes'], $d->fields[2]['flags']);
 
         $this->assertFalse($d->nativeCompatible);
-        $this->assertSame([['field' => 'role', 'rule' => 'in', 'reason' => 'rule does not implement NativeCompilableInterface']], $d->unsupportedRules);
+        $this->assertSame([['field' => 'role', 'rule' => 'uppercase', 'reason' => 'rule does not implement NativeCompilableInterface']], $d->unsupportedRules);
         $this->assertSame(SchemaDiagnostics::ARTIFACT_NOT_COMPILABLE, $d->artifactStatus);
         $this->assertSame(SchemaDiagnostics::STRATEGY_ENGINE, $d->strategy);
-        $this->assertStringContainsString('role:in', $d->strategyReason);
+        $this->assertStringContainsString('role:uppercase', $d->strategyReason);
     }
 
     public function testNeverLeaksRuleParametersOrData(): void
     {
         $validator = new SchemaValidator(Validator::fromRules([
-            'token' => 'required|in:sk_live_SUPERSECRET|regex:/^hunter2$/',
+            'token' => 'required|in:sk_live_SUPERSECRET|regex:/^hunter2$/|uppercase',
         ]));
         $validator->validate(['token' => 'user-provided-secret-value']);
 
@@ -133,12 +133,12 @@ final class SchemaDiagnosticsTest extends TestCase
 
     public function testHumanReadableSummary(): void
     {
-        $text = (string) (new FastValidatorFactory())->diagnose(['email' => 'required|email', 'role' => 'in:a,b']);
+        $text = (string) (new FastValidatorFactory())->diagnose(['email' => 'required|email', 'role' => 'uppercase']);
 
         $this->assertStringContainsString('(2 fields, 3 rules)', $text);
         $this->assertStringContainsString('Strategy: engine', $text);
         $this->assertStringContainsString('✓ email: required|email', $text);
-        $this->assertStringContainsString('✗ role: in', $text);
+        $this->assertStringContainsString('✗ role: uppercase', $text);
     }
 
     public function testCacheAndArtifactCounters(): void

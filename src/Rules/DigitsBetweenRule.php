@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Vi\Validation\Rules;
 
+use Vi\Validation\Compilation\NativeCompilationContext;
 use Vi\Validation\Execution\ValidationContext;
 
 #[RuleName(RuleId::DIGITS_BETWEEN)]
-final class DigitsBetweenRule implements RuleInterface
+final class DigitsBetweenRule implements RuleInterface, NativeCompilableInterface
 {
     private int $min;
     private int $max;
@@ -50,5 +51,23 @@ final class DigitsBetweenRule implements RuleInterface
         }
 
         return null;
+    }
+
+    public function compileNative(NativeCompilationContext $context): string
+    {
+        $v = $context->valName;
+        $min = NativeCompilationContext::literal($this->min);
+        $max = NativeCompilationContext::literal($this->max);
+
+        return $context->emitError(
+            "(!is_scalar({$v}) || !ctype_digit((string) {$v}) || strlen((string) {$v}) < {$min} || strlen((string) {$v}) > {$max})",
+            'digits_between',
+            "['min' => {$min}, 'max' => {$max}]"
+        );
+    }
+
+    public function isImplicitForNative(): bool
+    {
+        return false;
     }
 }

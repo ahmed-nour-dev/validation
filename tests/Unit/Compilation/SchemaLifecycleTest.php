@@ -106,13 +106,13 @@ final class SchemaLifecycleTest extends TestCase
     public function testWarmOnANonCompilableSchemaFallsBackToEngine(): void
     {
         $validator = SchemaValidator::build(
-            static fn (SchemaBuilder $s) => $s->field('role')->required()->in('admin', 'user'),
+            static fn (SchemaBuilder $s) => $s->field('role')->required()->uppercase(),
             ['compilation' => ['precompile' => true, 'cache_path' => $this->dir]]
         );
 
         $this->assertFalse($validator->warm());
         $this->assertFalse($validator->validate(['role' => 'root'])->isValid());
-        $this->assertTrue($validator->validate(['role' => 'admin'])->isValid());
+        $this->assertTrue($validator->validate(['role' => 'ADMIN'])->isValid());
     }
 
     public function testFactoryPrecompileThenMakeUsesArtifact(): void

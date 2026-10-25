@@ -10,7 +10,7 @@ use Vi\Validation\Compilation\NativeCompiler;
 use Vi\Validation\Compilation\UnsupportedNativeRuleException;
 use Vi\Validation\Compilation\ValidatorCompiler;
 use Vi\Validation\Execution\ValidatorEngine;
-use Vi\Validation\Rules\InRule;
+use Vi\Validation\Rules\UppercaseRule;
 use Vi\Validation\Rules\RequiredRule;
 use Vi\Validation\Validator;
 
@@ -35,7 +35,7 @@ class NativeCompilerTest extends TestCase
     {
         $schema = Validator::schema()
             ->field('name')->required()->string()
-            ->field('status')->required()->in('active', 'inactive')
+            ->field('status')->required()->uppercase()
             ->compile();
 
         $compiler = new NativeCompiler();
@@ -44,7 +44,7 @@ class NativeCompilerTest extends TestCase
 
         $unsupported = $compiler->findUnsupportedRules($schema);
         $this->assertCount(1, $unsupported);
-        $this->assertSame('status:' . InRule::class, $unsupported[0]);
+        $this->assertSame('status:' . UppercaseRule::class, $unsupported[0]);
     }
 
     public function testIsSupportedDistinguishesInlinableFromNonInlinableRules(): void
@@ -52,7 +52,7 @@ class NativeCompilerTest extends TestCase
         $compiler = new NativeCompiler();
 
         $this->assertTrue($compiler->isSupported(new RequiredRule()));
-        $this->assertFalse($compiler->isSupported(new InRule(['a', 'b'])));
+        $this->assertFalse($compiler->isSupported(new UppercaseRule()));
     }
 
     /**
@@ -64,13 +64,13 @@ class NativeCompilerTest extends TestCase
     {
         $schema = Validator::schema()
             ->field('name')->required()->string()
-            ->field('code')->required()->regex('/^[A-Z]{3}$/')
+            ->field('code')->required()->uppercase()
             ->compile();
 
         $compiler = new NativeCompiler();
 
         $this->expectException(UnsupportedNativeRuleException::class);
-        $this->expectExceptionMessageMatches('/code.*RegexRule/');
+        $this->expectExceptionMessageMatches('/code.*UppercaseRule/');
 
         $compiler->compile($schema);
     }
@@ -99,7 +99,7 @@ class NativeCompilerTest extends TestCase
     {
         $schema = Validator::schema()
             ->field('name')->required()->string()->max(10)
-            ->field('role')->required()->in('admin', 'member')
+            ->field('role')->required()->uppercase()
             ->compile();
 
         $compiler = new NativeCompiler();
@@ -108,12 +108,12 @@ class NativeCompilerTest extends TestCase
         $engine = new ValidatorEngine();
 
         // A value that a naive "skip the unsupported rule" native compiler
-        // would have wrongly accepted, because it can't check `in`.
+        // would have wrongly accepted, because it can't check `uppercase`.
         $invalid = $engine->validate($schema, ['name' => 'Bob', 'role' => 'superuser']);
         $this->assertFalse($invalid->isValid());
         $this->assertArrayHasKey('role', $invalid->errors());
 
-        $valid = $engine->validate($schema, ['name' => 'Bob', 'role' => 'admin']);
+        $valid = $engine->validate($schema, ['name' => 'Bob', 'role' => 'ADMIN']);
         $this->assertTrue($valid->isValid());
     }
 
@@ -126,7 +126,7 @@ class NativeCompilerTest extends TestCase
     {
         $schema = Validator::schema()
             ->field('name')->required()->string()
-            ->field('role')->required()->in('admin', 'member')
+            ->field('role')->required()->uppercase()
             ->compile();
 
         $cacheDir = sys_get_temp_dir() . '/vi-validation-native-test-' . uniqid('', true);

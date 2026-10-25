@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Vi\Validation\Rules;
 
+use Vi\Validation\Compilation\NativeCompilationContext;
+use Vi\Validation\Execution\Emptiness;
 use Vi\Validation\Execution\ValidationContext;
 
 #[RuleName(RuleId::REQUIRED_UNLESS)]
-final class RequiredUnlessRule implements RuleInterface
+final class RequiredUnlessRule implements RuleInterface, NativeCompilableInterface
 {
     private string $otherField;
 
@@ -61,5 +63,22 @@ final class RequiredUnlessRule implements RuleInterface
         }
 
         return false;
+    }
+
+    public function compileNative(NativeCompilationContext $context): string
+    {
+        $v = $context->valName;
+        $i = $context->indent;
+        $params = "['other' => " . NativeCompilationContext::literal($this->otherField)
+            . ", 'values' => " . NativeCompilationContext::literal(DependentValues::describe($this->values)) . ']';
+        $matches = "\\Vi\\Validation\\Rules\\DependentValues::matches({$v}_o, " . NativeCompilationContext::literal($this->values) . ')';
+
+        return "{$i}{$v}_o = " . NativeCompilationContext::lookup($this->otherField) . ";\n"
+            . $context->emitError("!{$matches} && " . Emptiness::nativeExpression($v), 'required_unless', $params);
+    }
+
+    public function isImplicitForNative(): bool
+    {
+        return true;
     }
 }

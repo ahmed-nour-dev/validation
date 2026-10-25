@@ -30,7 +30,7 @@ use ReflectionClass;
  */
 final class NativeCompiler
 {
-    public const COMPILER_VERSION = '2.1.0';
+    public const COMPILER_VERSION = '2.2.0';
 
     /**
      * Check whether every rule in the schema can be natively inlined.

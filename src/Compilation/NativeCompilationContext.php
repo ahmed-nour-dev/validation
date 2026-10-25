@@ -26,6 +26,44 @@ final class NativeCompilationContext
     }
 
     /**
+     * PHP source for a rule parameter embedded in generated code.
+     *
+     * Only null, scalars and (nested) arrays of them have a faithful source form; anything else
+     * (a Closure, an object) would export to something that no longer behaves like the original,
+     * so it is refused instead and the schema stays on ValidatorEngine.
+     */
+    public static function literal(mixed $value): string
+    {
+        if ($value === null || is_scalar($value)) {
+            return var_export($value, true);
+        }
+
+        if (is_array($value)) {
+            $items = [];
+            foreach ($value as $key => $item) {
+                $items[] = var_export($key, true) . ' => ' . self::literal($item);
+            }
+
+            return '[' . implode(', ', $items) . ']';
+        }
+
+        throw new UnsupportedNativeRuleException(
+            'Cannot embed a ' . get_debug_type($value) . ' parameter in native code.'
+        );
+    }
+
+    /**
+     * PHP source reading another field's value from the row, like ValidationContext::getValue()
+     * (same dot-notation lookup; null when absent).
+     */
+    public static function lookup(string $field): string
+    {
+        return strpos($field, '.') === false
+            ? '$data[' . var_export($field, true) . '] ?? null'
+            : '\\Vi\\Validation\\Execution\\DataHelper::get($data, ' . var_export($field, true) . ')';
+    }
+
+    /**
      * Same context at a deeper (or different) indentation level, e.g. inside
      * an `if`/`else` block a rule generates itself.
      */

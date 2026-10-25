@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Vi\Validation\Rules;
 
+use Vi\Validation\Compilation\NativeCompilationContext;
+use Vi\Validation\Execution\Emptiness;
 use Vi\Validation\Execution\ValidationContext;
 
 #[RuleName(RuleId::REQUIRED_WITH)]
-final class RequiredWithRule implements RuleInterface
+final class RequiredWithRule implements RuleInterface, NativeCompilableInterface
 {
     /** @var list<string> */
     private array $otherFields;
@@ -65,5 +67,35 @@ final class RequiredWithRule implements RuleInterface
         }
 
         return false;
+    }
+
+    public function compileNative(NativeCompilationContext $context): string
+    {
+        $v = $context->valName;
+        $i = $context->indent;
+        $any = $v . '_any';
+        $o = $v . '_o';
+        $params = "['values' => " . NativeCompilationContext::literal(implode(', ', $this->otherFields)) . ']';
+
+        // required when any other field is non-empty
+        $code = "{$i}{$any} = false;\n";
+        foreach ($this->otherFields as $n => $other) {
+            $pad = $n === 0 ? $i : $i . '    ';
+            if ($n > 0) {
+                $code .= "{$i}if (!{$any}) {\n";
+            }
+            $code .= "{$pad}{$o} = " . NativeCompilationContext::lookup($other) . ";\n"
+                . "{$pad}{$any} = !" . Emptiness::nativeExpression($o) . ";\n";
+            if ($n > 0) {
+                $code .= "{$i}}\n";
+            }
+        }
+
+        return $code . $context->emitError("{$any} && " . Emptiness::nativeExpression($v), 'required_with', $params);
+    }
+
+    public function isImplicitForNative(): bool
+    {
+        return true;
     }
 }

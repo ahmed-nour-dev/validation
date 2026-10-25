@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Vi\Validation\Rules;
 
+use Vi\Validation\Compilation\NativeCompilationContext;
+use Vi\Validation\Compilation\NativeSizeCompiler;
 use Vi\Validation\Execution\ValidationContext;
 
 #[RuleName(RuleId::SIZE)]
-final class SizeRule implements RuleInterface, NumericAwareInterface
+final class SizeRule implements RuleInterface, NumericAwareInterface, NativeCompilableInterface
 {
     private int|float $size;
     private bool $isNumeric = false;
@@ -63,5 +65,22 @@ final class SizeRule implements RuleInterface, NumericAwareInterface
         }
 
         return 0;
+    }
+
+    public function compileNative(NativeCompilationContext $context): string
+    {
+        $size = NativeCompilationContext::literal($this->size);
+        $inner = $context->withIndent($context->indent . '    ');
+
+        // Loose float comparison, as in validate() (int and float sizes compare equal).
+        return NativeSizeCompiler::emitSize($context, $this->isNumeric)
+            . "{$context->indent}if ((float) \$size != (float) {$size}) {\n"
+            . $inner->errorStatement('size', "['type' => \$type_tag, 'size' => {$size}]")
+            . "{$context->indent}}\n";
+    }
+
+    public function isImplicitForNative(): bool
+    {
+        return false;
     }
 }

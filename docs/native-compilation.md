@@ -287,12 +287,12 @@ echo FastValidator::make($data, $rules)->diagnostics();
 
 ```
 Schema 3f9c2a1b7d0e (3 fields, 6 rules)
-Strategy: engine - not natively compilable: role:in
+Strategy: engine - not natively compilable: role:uppercase
 Artifact: not-compilable
 Compiler 2.0.0, PHP 80419, compiled in 0.061 ms
   ✓ email: required|email
-  ✗ role: required|in
-      ✗ in: rule does not implement NativeCompilableInterface
+  ✗ role: required|uppercase
+      ✗ uppercase: rule does not implement NativeCompilableInterface
   ✓ nick [sometimes]: nullable|string
 ```
 

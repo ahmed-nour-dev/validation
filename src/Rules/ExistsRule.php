@@ -26,6 +26,11 @@ final class ExistsRule implements RuleInterface
         $this->connection = $connection;
     }
 
+    public function lookup(): DatabaseLookup
+    {
+        return new DatabaseLookup($this->table, $this->column, null, 'id', $this->extraConstraints, $this->connection);
+    }
+
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
         if ($value === null) {

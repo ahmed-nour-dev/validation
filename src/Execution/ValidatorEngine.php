@@ -262,6 +262,11 @@ final class ValidatorEngine
         $this->messageResolver = $resolver;
     }
 
+    public function getDatabaseValidator(): ?\Vi\Validation\Rules\DatabaseValidatorInterface
+    {
+        return $this->databaseValidator;
+    }
+
     public function setDatabaseValidator(?\Vi\Validation\Rules\DatabaseValidatorInterface $validator): void
     {
         $this->databaseValidator = $validator;

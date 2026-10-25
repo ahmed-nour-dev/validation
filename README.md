@@ -374,6 +374,24 @@ foreach ($chunked->streamFailures($rows, chunkSize: 1000) as $index => $result) 
 $totalFailures = $chunked->countFailures($rows, chunkSize: 1000);
 ```
 
+
+#### Batched `exists`/`unique` lookups
+
+Laravel runs one query per row for `exists`/`unique`, which dominates import time once the rest of validation is fast. Opt in to batching and each chunk costs about one `whereIn` query per rule instead:
+
+```php
+$validator->enableBatchLookups(lookahead: 1000);   // or performance.batch_lookups / FAST_VALIDATION_BATCH_LOOKUPS=true
+
+// 100,000 rows -> ~100 queries per rule instead of 100,000
+foreach ($validator->stream($rows) as $result) { /* ... */ }
+(new ChunkedValidator($validator))->validateInChunks($rows, 1000, fn ($i, $results) => /* bulk insert */ null);
+```
+
+- Works with `validateMany()`, `stream()`, `each()`, `failures()`, `report()` and `ChunkedValidator`; streaming reads at most `lookahead` rows ahead, so memory stays bounded.
+- Results are identical to per-row queries. `unique:...,ignore`/`Rule::unique()->ignore()` and scalar `where` constraints are batched; closure constraints, custom presence verifiers and values the database might match through its collation (e.g. accents) fall back to a per-row query automatically.
+- Standalone, your database validator must implement `BatchDatabaseValidatorInterface` (`matchingValues()`); otherwise batching is a no-op.
+- Lookups are resolved per chunk, so rows inserted by your `onChunk` callback are visible to the next chunk, exactly as with per-row queries.
+
 ### ✅ Working with Validation Results
 
 Every validation call returns a `ValidationResult` with a small, focused API:
@@ -644,6 +662,8 @@ This creates `config/fast-validation.php` with the following options (each overr
 | `performance.error_mode` | `FAST_VALIDATION_ERROR_MODE` | `all` | Error detail kept per row: `all`, `first_per_field`, `first_per_row` or `count_only`. See [Error Collection Strategies](#-error-collection-strategies-for-large-imports). |
 | `performance.max_errors` | `FAST_VALIDATION_MAX_ERRORS` | `100` | Stop collecting errors after this many, to bound worst-case cost on malformed input. |
 | `performance.fast_path_rules` | `FAST_VALIDATION_FAST_PATH` | `true` | Enable optimized code paths for common rule combinations. |
+| `performance.batch_lookups` | `FAST_VALIDATION_BATCH_LOOKUPS` | `false` | Answer `exists`/`unique` with one `whereIn` query per chunk instead of one per row. See [Batched `exists`/`unique`](#batched-existsunique-lookups). |
+| `performance.lookahead` | `FAST_VALIDATION_LOOKAHEAD` | `1000` | Rows read ahead per batched query when streaming (bounds memory). |
 | `localization.locale` | `FAST_VALIDATION_LOCALE` | `en` | Default locale for error messages. |
 | `localization.fallback_locale` | `FAST_VALIDATION_FALLBACK_LOCALE` | `en` | Locale used when a message is missing in the active locale. |
 | `runtime.pooling` | `FAST_VALIDATION_POOLING` | `false` | Enable `ValidatorPool` instance reuse for Octane/Swoole/RoadRunner. |

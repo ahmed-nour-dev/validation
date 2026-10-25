@@ -32,7 +32,7 @@ use Vi\Validation\Validator;
  */
 final class Suite
 {
-    public const SCENARIOS = ['user_import', 'order_lines', 'api_payload'];
+    public const SCENARIOS = ['user_import', 'order_lines', 'api_payload', 'wildcard_items'];
     public const PATHS = ['laravel', 'factory', 'engine', 'native'];
 
     private string $cacheDir;
@@ -88,6 +88,17 @@ final class Suite
                 'tags' => 'nullable|array|max:5',
                 'notes' => 'nullable|string|max:500',
             ],
+            // Order with a list of line items: wildcard rules, nested wildcards and a
+            // sibling reference. Wildcard schemas always run on the engine (no native closure).
+            'wildcard_items' => [
+                'order_id' => 'required|integer|min:1',
+                'items' => 'required|array|min:1',
+                'items.*.sku' => 'required|alpha_dash|max:32',
+                'items.*.qty' => 'required|integer|min:1|max:1000',
+                'items.*.price' => 'required|numeric|min:0',
+                'items.*.discount' => 'nullable|numeric|lte:items.*.price',
+                'items.*.tags.*' => 'string|max:20',
+            ],
             default => throw new \InvalidArgumentException("Unknown scenario {$scenario}"),
         };
     }
@@ -133,6 +144,19 @@ final class Suite
                     ],
                     'tags' => $i % 2 === 0 ? ['vip', 'b2b'] : null,
                     'notes' => $i % 9 === 0 ? str_repeat('n', 40) : null,
+                ],
+                'wildcard_items' => [
+                    'order_id' => 1 + $i,
+                    'items' => array_map(
+                        static fn (int $n): array => [
+                            'sku' => $bad && $n === 1 ? 'SKU #' . $i : "SKU-{$i}-{$n}",
+                            'qty' => 1 + (($i + $n) % 20),
+                            'price' => 10 + $n,
+                            'discount' => $n % 2 === 0 ? null : 5,
+                            'tags' => ['new', 'promo'],
+                        ],
+                        range(1, 5)
+                    ),
                 ],
             };
         }

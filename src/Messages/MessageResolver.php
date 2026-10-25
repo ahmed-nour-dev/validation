@@ -28,9 +28,11 @@ final class MessageResolver
     {
         // Check for custom message first (field.rule format)
         $customKey = $field . '.' . $rule;
-        if (isset($this->customMessages[$customKey])) {
+        $customMessage = $this->customMessages[$customKey]
+            ?? $this->matchWildcard($this->customMessages, $customKey);
+        if ($customMessage !== null) {
             return $this->replaceAttributes(
-                $this->customMessages[$customKey],
+                $customMessage,
                 $field,
                 $params
             );
@@ -99,7 +101,9 @@ final class MessageResolver
      */
     private function replaceAttributes(string $message, string $field, array $params): string
     {
-        $attribute = $this->customAttributes[$field] ?? $this->formatAttribute($field);
+        $attribute = $this->customAttributes[$field]
+            ?? $this->matchWildcard($this->customAttributes, $field)
+            ?? $this->formatAttribute($field);
 
         $replacements = array_merge($params, ['attribute' => $attribute]);
 
@@ -115,6 +119,30 @@ final class MessageResolver
         }
 
         return $message;
+    }
+
+    /**
+     * A custom message/attribute registered under a wildcard key ('items.*.sku.required',
+     * 'items.*.sku') for a concrete path ('items.0.sku.required'), like Laravel's Str::is().
+     *
+     * @param array<string, string> $custom
+     */
+    private function matchWildcard(array $custom, string $key): ?string
+    {
+        if (strpos($key, '.') === false) {
+            return null;
+        }
+
+        foreach ($custom as $pattern => $text) {
+            $pattern = (string) $pattern;
+            if (strpos($pattern, '*') !== false
+                && preg_match('/^' . str_replace('\\*', '.*', preg_quote($pattern, '/')) . '$/u', $key) === 1
+            ) {
+                return $text;
+            }
+        }
+
+        return null;
     }
 
     private function formatAttribute(string $field): string

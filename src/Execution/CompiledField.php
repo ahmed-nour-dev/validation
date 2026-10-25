@@ -16,6 +16,9 @@ final class CompiledField
     private bool $isBail = false;
     private bool $isSometimes = false;
     private bool $isNested;
+    private bool $isWildcard;
+    /** @var list<array{0: string, 1: list<string>}>|null */
+    private ?array $singleTarget = null;
     private ?string $parentField = null;
     private ?string $childField = null;
 
@@ -29,6 +32,7 @@ final class CompiledField
     private function __construct(string $name, array $rules)
     {
         $this->name = $name;
+        $this->isWildcard = strpos($name, '*') !== false;
 
         if (strpos($name, '.') !== false) {
             $this->isNested = true;
@@ -128,6 +132,25 @@ final class CompiledField
     public function getRules(): array
     {
         return $this->rules;
+    }
+
+    /**
+     * Whether the field name has a '*' segment ('items.*.sku') and so expands to one concrete
+     * field per matching element at validation time. Always runs on ValidatorEngine.
+     */
+    public function isWildcard(): bool
+    {
+        return $this->isWildcard;
+    }
+
+    /**
+     * The one target of a non-wildcard field, in the shape DataHelper::expand() returns.
+     *
+     * @return list<array{0: string, 1: list<string>}>
+     */
+    public function singleTarget(): array
+    {
+        return $this->singleTarget ??= [[$this->name, []]];
     }
 
     public function isNullable(): bool

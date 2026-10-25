@@ -460,7 +460,7 @@ $schema = Validator::schema()
 
 ### 🛠 Supported Rules
 
-Every standard Laravel rule is supported (except wildcard `*` attributes); rule objects such as
+Every standard Laravel rule is supported, including wildcard attributes (`items.*.sku`, `a.*.b.*.c`; error keys like `items.0.sku`, `*` in sibling references bound to the same element). Wildcard schemas run on the engine and are never natively compiled. Rule objects such as
 `Rule::in()` and your own `ValidationRule` classes work too. See the full
 **[rule compatibility matrix](docs/rules.md)** for engine/native support, Laravel parity status,
 dependencies and known differences for every rule.
@@ -511,8 +511,6 @@ rule it records:
 
 Known, currently-intentional divergences from Laravel (see the matrix for full detail on each):
 
-- **Wildcard attributes** (`items.*.sku`) aren't implemented; a wildcard field name never
-  matches real data. Dot paths of any depth (`a.b.c`) work like Laravel.
 - **`accepted_if`/`declined_if`/`exclude_if`/`exclude_unless`/`missing_if`/`missing_unless`**
   only support a single dependent value, where Laravel supports several
   (`accepted_if:field,v1,v2`).

@@ -67,50 +67,66 @@ final class ValidatorEngine
                     break;
                 }
 
-                $name = $field->getName();
+                $isWildcard = $field->isWildcard();
 
-                // Handle exclusion rules
-                if ($field->shouldExclude($context)) {
-                    $excludedFields[] = $name;
-                    continue;
-                }
+                // One concrete target per matching element for a wildcard field (a single
+                // traversal of the payload), otherwise just the field itself.
+                foreach ($isWildcard ? DataHelper::expand($data, $field->getName()) : $field->singleTarget() as [$name, $keys]) {
+                    if ($isWildcard) {
+                        /** @phpstan-ignore-next-line */
+                        if ($this->shouldStopValidation($errors)) {
+                            break 2;
+                        }
+                        $context->setWildcardKeys($keys, $field->getName());
+                    }
 
-                // Handle 'sometimes' rule: skip if field is not present in data
-                if ($field->isSometimes() && !$context->hasValue($name)) {
-                    continue;
-                }
-
-                $value = $field->getValue($data);
-                $rules = $field->getRules();
-                $isNullable = $field->isNullable();
-
-                // Laravel semantics (Validator::presentOrRuleIsImplicit): non-implicit rules are
-                // skipped for a missing key or a blank string, but a present null or [] is validated.
-                // `nullable` additionally skips a present null, but only for non-implicit rules:
-                // `nullable|accepted` and `nullable|required_if:...` still run on null in Laravel.
-                $isEmpty = $value === null
-                    ? ($isNullable || !$context->hasValue($name))
-                    : (is_string($value) && ($value === ''
-                        || (isset(Emptiness::BLANK_FIRST[$value[0]]) && Emptiness::isBlankString($value))));
-
-                foreach ($rules as $rule) {
-                    // Non-implicit rules should skip if the value is "empty"
-                    if ($isEmpty && !$this->isImplicitRule($rule)) {
+                    // Handle exclusion rules
+                    if ($field->shouldExclude($context)) {
+                        $excludedFields[] = $name;
                         continue;
                     }
 
-                    if ($this->applyRule($rule, $name, $value, $context)) {
-                        // Handle 'bail' rule (or ErrorMode::FirstPerField): stop validating this
-                        // field after its first failure
-                        if ($firstPerField || $field->isBail()) {
-                            break;
+                    // Handle 'sometimes' rule: skip if field is not present in data
+                    if ($field->isSometimes() && !$context->hasValue($name)) {
+                        continue;
+                    }
+
+                    $value = $isWildcard ? DataHelper::get($data, $name) : $field->getValue($data);
+                    $rules = $field->getRules();
+                    $isNullable = $field->isNullable();
+
+                    // Laravel semantics (Validator::presentOrRuleIsImplicit): non-implicit rules are
+                    // skipped for a missing key or a blank string, but a present null or [] is validated.
+                    // `nullable` additionally skips a present null, but only for non-implicit rules:
+                    // `nullable|accepted` and `nullable|required_if:...` still run on null in Laravel.
+                    $isEmpty = $value === null
+                        ? ($isNullable || !$context->hasValue($name))
+                        : (is_string($value) && ($value === ''
+                            || (isset(Emptiness::BLANK_FIRST[$value[0]]) && Emptiness::isBlankString($value))));
+
+                    foreach ($rules as $rule) {
+                        // Non-implicit rules should skip if the value is "empty"
+                        if ($isEmpty && !$this->isImplicitRule($rule)) {
+                            continue;
                         }
 
-                        /** @phpstan-ignore-next-line */
-                        if ($this->shouldStopValidation($errors)) {
-                            break;
+                        if ($this->applyRule($rule, $name, $value, $context)) {
+                            // Handle 'bail' rule (or ErrorMode::FirstPerField): stop validating this
+                            // field after its first failure
+                            if ($firstPerField || $field->isBail()) {
+                                break;
+                            }
+
+                            /** @phpstan-ignore-next-line */
+                            if ($this->shouldStopValidation($errors)) {
+                                break;
+                            }
                         }
                     }
+                }
+
+                if ($isWildcard) {
+                    $context->setWildcardKeys([]);
                 }
             }
 
@@ -127,6 +143,7 @@ final class ValidatorEngine
             // ValidationResult holds its own copies.
             $errors->reset();
             $context->setData([]);
+            $context->setWildcardKeys([]);
         }
     }
 

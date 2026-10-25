@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Wildcard attributes (`items.*.sku`, nested `a.*.b.*.c`, `tags.*`). `ValidatorEngine` expands them against
+  each payload in a single traversal, reports errors under Laravel's concrete keys (`items.0.sku`), binds `*`
+  in sibling references (`same`, `different`, `gt`/`lte`, `required_with`, `required_if`, `exclude_if`, ...)
+  to the element being validated, and makes `distinct` compare wildcard siblings. Custom messages and
+  attributes keyed by a wildcard pattern apply to the expanded keys.
+- `wildcard_items` benchmark scenario.
+
+### Fixed
+- A wildcard rule key was never matched against real data, so implicit rules always failed and other rules were
+  silently skipped (invalid data passed). Wildcard rule keys are no longer skipped.
+
+### Changed
+- Wildcard schemas are never natively compiled (`NativeCompiler::canCompile()` reports `:wildcard`); they run on
+  the engine.
+
 ## [0.2.1] - 2026-10-25
 
 Documentation and package metadata only; no code changes.

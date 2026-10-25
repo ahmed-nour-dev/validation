@@ -215,4 +215,22 @@ final class LaravelCoverageParityTest extends ParityTestCase
         $this->assertParity(['a' => 'exclude_if:t,x,y|required'], ['t' => 'y']);
         $this->assertParity(['a' => 'exclude_unless:t,x,y|required'], ['t' => 'z']);
     }
+
+    public function testMultipleDependentValuesAcrossMatchAndMiss(): void
+    {
+        $rules = [
+            'accepted_if:t,x,y', 'declined_if:t,x,y', 'missing_if:t,x,y', 'missing_unless:t,x,y',
+            'exclude_if:t,x,y|required', 'exclude_unless:t,x,y|required', 'accepted_if:t,"a,b",c',
+            'declined_if:t,1,true,null',
+        ];
+        $others = ['x', 'y', 'z', 'a,b', 'c', 1, true, null, 'null'];
+
+        foreach ($rules as $rule) {
+            foreach ($others as $other) {
+                foreach ([['t' => $other], ['t' => $other, 'a' => 'yes'], ['t' => $other, 'a' => 'no']] as $data) {
+                    $this->assertParity(['a' => $rule], $data);
+                }
+            }
+        }
+    }
 }

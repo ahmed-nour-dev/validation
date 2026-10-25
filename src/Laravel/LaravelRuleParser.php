@@ -166,7 +166,7 @@ final class LaravelRuleParser
             'exists' => isset($params[0]) ? $this->buildExistsRule($class, $field, $params) : null,
             'unique' => isset($params[0]) ? $this->buildUniqueRule($class, $field, $params) : null,
 
-            // Dependent-value conditional rules (single-value only; see LaravelRuleParser docs)
+            // Dependent-value conditional rules (one or more values: `rule:other,v1,v2,...`)
             'accepted_if', 'declined_if', 'exclude_if', 'exclude_unless', 'missing_if', 'missing_unless' =>
                 isset($params[0], $params[1]) ? new $class($params[0], array_slice($params, 1)) : null,
 

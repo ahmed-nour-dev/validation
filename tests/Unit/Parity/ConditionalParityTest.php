@@ -13,10 +13,8 @@ use Vi\Validation\Tests\Unit\Parity\Support\ParityTestCase;
  * missing_with, missing_with_all, prohibited, prohibited_if, prohibited_unless, prohibits,
  * exclude, exclude_if, exclude_unless, exclude_with, exclude_without, accepted_if, declined_if.
  *
- * accepted_if/declined_if/exclude_if/exclude_unless/missing_if/missing_unless: LaravelRuleParser
- * only wires the first dependent value (see resources/compatibility-matrix.json, status
- * "partial") — Laravel's multi-value form (`accepted_if:field,v1,v2`) is intentionally not
- * covered here since the underlying rule classes don't support it yet.
+ * The multi-value form of accepted_if/declined_if/exclude_if/exclude_unless/missing_if/missing_unless
+ * (`accepted_if:field,v1,v2`) is covered in LaravelCoverageParityTest.
  */
 #[Group('laravel')]
 class ConditionalParityTest extends ParityTestCase

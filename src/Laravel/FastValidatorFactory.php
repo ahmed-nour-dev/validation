@@ -236,12 +236,18 @@ final class FastValidatorFactory
         $engine->setDatabaseValidator($this->databaseValidator);
         $engine->setPasswordHasher($this->passwordHasher);
 
-        return new SchemaValidator(
+        $validator = new SchemaValidator(
             $schema,
             $engine,
             $this->compiler,
             $messageResolver
         );
+
+        if ((bool) ($this->config['performance']['batch_lookups'] ?? false)) {
+            $validator->enableBatchLookups(max(1, (int) ($this->config['performance']['lookahead'] ?? 1000)));
+        }
+
+        return $validator;
     }
 
     /**

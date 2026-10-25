@@ -79,6 +79,14 @@ return [
         
         // Enable optimized fast-path rules for common validations
         'fast_path_rules' => env('FAST_VALIDATION_FAST_PATH', true),
+
+        // Answer exists/unique rules with one whereIn query per chunk instead of one query per
+        // row (validateMany, stream, ChunkedValidator). Falls back to per-row queries for
+        // anything that can't be batched.
+        'batch_lookups' => env('FAST_VALIDATION_BATCH_LOOKUPS', false),
+
+        // Rows read ahead per batched query when streaming; also bounds streaming memory.
+        'lookahead' => env('FAST_VALIDATION_LOOKAHEAD', 1000),
     ],
 
     /*

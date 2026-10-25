@@ -30,6 +30,11 @@ final class UniqueRule implements RuleInterface
         $this->connection = $connection;
     }
 
+    public function lookup(): DatabaseLookup
+    {
+        return new DatabaseLookup($this->table, $this->column, $this->ignoreId, $this->idColumn, $this->extraConstraints, $this->connection);
+    }
+
     public function validate(mixed $value, string $field, ValidationContext $context): ?array
     {
         if ($value === null) {

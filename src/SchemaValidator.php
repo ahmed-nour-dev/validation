@@ -100,6 +100,126 @@ final class SchemaValidator
         return $this->usesNative();
     }
 
+    private ?\Vi\Validation\Execution\LookupBatcher $lookupBatcher = null;
+
+    private int $lookahead = 0;
+
+    /**
+     * Answer `exists` / `unique` rules from one `whereIn` query per chunk instead of one query
+     * per row. Applies to validateMany() and to stream(), each(), failures(), report() and
+     * firstFailureWithIndex(), which read $lookahead rows ahead (bounded memory) and prime the
+     * lookups for them. Results are identical to per-row queries; anything that can't be
+     * batched (closure constraints, collation-ambiguous values, custom presence verifiers)
+     * silently falls back to a per-row query.
+     *
+     * A no-op unless the engine's database validator implements BatchDatabaseValidatorInterface
+     * (the Laravel presence verifier does) and the schema has top-level exists/unique rules.
+     * Call it after setDatabaseValidator().
+     *
+     * @param positive-int $lookahead Rows buffered, and so values per query batch, in streaming.
+     */
+    public function enableBatchLookups(int $lookahead = 1000): self
+    {
+        $this->disableBatchLookups();
+
+        $inner = $this->engine->getDatabaseValidator();
+        if ($inner instanceof \Vi\Validation\Rules\BatchDatabaseValidatorInterface) {
+            $batcher = new \Vi\Validation\Execution\LookupBatcher($inner);
+            if ($batcher->plan($this->schema)) {
+                $this->lookupBatcher = $batcher;
+                $this->lookahead = max(1, $lookahead);
+                $this->engine->setDatabaseValidator($batcher);
+            }
+        }
+
+        return $this;
+    }
+
+    public function disableBatchLookups(): self
+    {
+        if ($this->lookupBatcher !== null) {
+            if ($this->engine->getDatabaseValidator() === $this->lookupBatcher) {
+                $this->engine->setDatabaseValidator($this->lookupBatcher->inner());
+            }
+            $this->lookupBatcher = null;
+        }
+
+        return $this;
+    }
+
+    public function batchesLookups(): bool
+    {
+        return $this->lookupBatcher !== null && $this->engine->getDatabaseValidator() === $this->lookupBatcher;
+    }
+
+    /**
+     * Number of batched lookup queries issued so far (0 when batching is off).
+     */
+    public function batchedQueryCount(): int
+    {
+        return $this->lookupBatcher?->queryCount() ?? 0;
+    }
+
+    /**
+     * Pass rows through, priming database lookups for each $lookahead-sized window.
+     *
+     * @param iterable<array-key, array<string, mixed>> $rows
+     * @return iterable<array-key, array<string, mixed>>
+     */
+    private function withLookahead(iterable $rows): iterable
+    {
+        if (!$this->batchesLookups()) {
+            return $rows;
+        }
+
+        return $this->lookaheadGenerator($rows);
+    }
+
+    /**
+     * @param iterable<array-key, array<string, mixed>> $rows
+     * @return Generator<array-key, array<string, mixed>>
+     */
+    private function lookaheadGenerator(iterable $rows): Generator
+    {
+        $batcher = $this->lookupBatcher;
+        if ($batcher === null) {
+            yield from $rows;
+            return;
+        }
+
+        $window = [];
+
+        try {
+            foreach ($rows as $key => $row) {
+                $window[] = [$key, $row];
+
+                if (count($window) >= $this->lookahead) {
+                    yield from $this->drainWindow($batcher, $window);
+                    $window = [];
+                }
+            }
+
+            if ($window !== []) {
+                yield from $this->drainWindow($batcher, $window);
+            }
+        } finally {
+            $batcher->clear();
+        }
+    }
+
+    /**
+     * @param list<array{0: array-key, 1: array<string, mixed>}> $window
+     * @return Generator<array-key, array<string, mixed>>
+     */
+    private function drainWindow(\Vi\Validation\Execution\LookupBatcher $batcher, array $window): Generator
+    {
+        $batcher->prime($this->schema, array_column($window, 1));
+
+        foreach ($window as [$key, $row]) {
+            yield $key => $row;
+        }
+    }
+
     private ?\Vi\Validation\Execution\NativeValidator $cachedNativeValidator = null;
 
     private bool $nativeResolved = false;
@@ -161,7 +281,8 @@ final class SchemaValidator
     {
         $results = [];
 
-        foreach ($rows as $row) {
+        // validateMany() materializes everything anyway, so one priming pass covers all rows.
+        foreach ($this->withLookahead($rows) as $row) {
             $results[] = $this->validate($row);
         }
 
@@ -197,7 +318,7 @@ final class SchemaValidator
     {
         $index = 0;
 
-        foreach ($rows as $key => $row) {
+        foreach ($this->withLookahead($rows) as $key => $row) {
             yield ($preserveKeys ? $key : $index) => $this->validate($row);
             $index++;
         }
@@ -226,7 +347,7 @@ final class SchemaValidator
     {
         $index = 0;
 
-        foreach ($rows as $key => $row) {
+        foreach ($this->withLookahead($rows) as $key => $row) {
             $callback($this->validate($row), $preserveKeys ? $key : $index);
             $index++;
         }
@@ -246,7 +367,7 @@ final class SchemaValidator
     {
         $index = 0;
 
-        foreach ($rows as $key => $row) {
+        foreach ($this->withLookahead($rows) as $key => $row) {
             $result = $this->validate($row);
 
             if (!$result->isValid()) {
@@ -285,7 +406,7 @@ final class SchemaValidator
         $failures = [];
         $countsByField = [];
 
-        foreach ($rows as $key => $row) {
+        foreach ($this->withLookahead($rows) as $key => $row) {
             $result = $this->validate($row);
 
             if (!$result->isValid()) {
@@ -359,7 +480,7 @@ final class SchemaValidator
     {
         $index = 0;
 
-        foreach ($rows as $key => $row) {
+        foreach ($this->withLookahead($rows) as $key => $row) {
             $result = $this->validate($row);
 
             if (!$result->isValid()) {

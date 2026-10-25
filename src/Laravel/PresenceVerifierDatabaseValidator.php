@@ -6,7 +6,8 @@ namespace Vi\Validation\Laravel;
 
 use Closure;
 use Illuminate\Validation\PresenceVerifierInterface;
-use Vi\Validation\Rules\DatabaseValidatorInterface;
+use Illuminate\Validation\DatabasePresenceVerifier;
+use Vi\Validation\Rules\BatchDatabaseValidatorInterface;
 
 /**
  * Backs `exists` / `unique` with Laravel's own presence verifier (the `validation.presence`
@@ -16,7 +17,7 @@ use Vi\Validation\Rules\DatabaseValidatorInterface;
  * Accepts either a verifier or a resolver closure; the closure is only called on the first
  * database rule evaluated, so apps that never use exists/unique never touch the database.
  */
-final class PresenceVerifierDatabaseValidator implements DatabaseValidatorInterface
+final class PresenceVerifierDatabaseValidator implements BatchDatabaseValidatorInterface
 {
     private ?PresenceVerifierInterface $verifier = null;
 
@@ -45,6 +46,33 @@ final class PresenceVerifierDatabaseValidator implements DatabaseValidatorInterf
     public function unique(string $table, string $column, mixed $value, mixed $ignoreId = null, string $idColumn = 'id', array $extraConstraints = [], ?string $connection = null): bool
     {
         return $this->verifier($connection)->getCount($table, $column, $value, $ignoreId, $idColumn, $extraConstraints) === 0;
+    }
+
+    public function matchingValues(string $table, string $column, array $values, mixed $ignoreId = null, string $idColumn = 'id', array $extraConstraints = [], ?string $connection = null): ?array
+    {
+        $verifier = $this->verifier($connection);
+
+        // Only Laravel's database verifier exposes its query builder; custom verifiers stay per-row.
+        if (!$verifier instanceof DatabasePresenceVerifier) {
+            return null;
+        }
+
+        // Runs inside the verifier so table() and addConditions() give exactly the connection,
+        // write-PDO and constraint semantics of getCount().
+        $query = function () use ($table, $column, $values, $ignoreId, $idColumn, $extraConstraints): array {
+            /** @phpstan-ignore-next-line variable.undefined */
+            $builder = $this->table($table)->whereIn($column, $values);
+
+            if ($ignoreId !== null && $ignoreId !== 'NULL') {
+                $builder->where($idColumn ?: 'id', '<>', $ignoreId);
+            }
+
+            /** @phpstan-ignore-next-line variable.undefined */
+            return $this->addConditions($builder, $extraConstraints)->distinct()->pluck($column)->all();
+        };
+
+        /** @var list<string|int|float> */
+        return \Closure::bind($query, $verifier, $verifier)();
     }
 
     private function verifier(?string $connection): PresenceVerifierInterface

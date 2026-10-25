@@ -16,9 +16,8 @@ use Vi\Validation\Compilation\ValidatorCompiler;
 use Vi\Validation\Execution\ValidatorEngine;
 use Vi\Validation\Laravel\FastValidatorFactory;
 use Vi\Validation\Laravel\FastValidatorWrapper;
-use Vi\Validation\Laravel\LaravelRuleParser;
+use Vi\Validation\Laravel\RuleSetCompiler;
 use Vi\Validation\Rules\RuleRegistry;
-use Vi\Validation\Schema\SchemaBuilder;
 use Vi\Validation\SchemaValidator;
 
 /**
@@ -130,15 +129,9 @@ abstract class ParityTestCase extends TestCase
     protected function fastNative(array $data, array $rules): ?FastValidatorWrapper
     {
         $registry = $this->registry();
-        $parser = new LaravelRuleParser($registry);
-        $builder = new SchemaBuilder();
-        $builder->setRulesArray($rules);
-
-        foreach ($rules as $field => $definition) {
-            $builder->field((string) $field)->rules(...$parser->parse($definition, (string) $field));
-        }
-
-        $schema = $builder->compile();
+        // The same builder the factory and precompilation use, so the schema carries the
+        // numeric/array context that size and in/not_in rules depend on.
+        $schema = (new RuleSetCompiler($registry))->compile($rules);
 
         $nativeCompiler = new NativeCompiler();
         if (!$nativeCompiler->canCompile($schema)) {

@@ -3,7 +3,7 @@
 <!-- Generated from resources/compatibility-matrix.json by `php tests/generate_rule_matrix.php`. Do not edit by hand. -->
 
 Every rule ahmednour/validation knows about, and every rule the supported Laravel versions define.
-**120 rules: 107 with verified Laravel parity, 20 natively compilable.**
+**120 rules: 107 with verified Laravel parity, 38 natively compilable.**
 
 Parity is verified against the real `illuminate/validation` on Laravel 10.x / 11.x / 12.x / 13.x × PHP 8.1 / 8.2 / 8.3 / 8.4 in CI.
 
@@ -49,13 +49,13 @@ Parity is verified against the real `illuminate/validation` on Laravel 10.x / 11
 | `prohibited_if_declined` | yes | no | ✅ verified | 11.x+ | — |  |
 | `prohibited_unless` | yes | no | ✅ verified | all | — | Uses Laravel's typed dependent-value matching (JSON ints/bools/null match their string parameters); previously required_if/required_unless compared strictly and never matched non-string input. |
 | `prohibits` | yes | no | ✅ verified | all | — | LaravelRuleParser previously built this with zero fields (variadic ctor, silent no-op); fixed as part of issue #5. |
-| `required_if` | yes | no | ✅ verified | all | — | Uses Laravel's typed dependent-value matching (JSON ints/bools/null match their string parameters); previously required_if/required_unless compared strictly and never matched non-string input. |
+| `required_if` | yes | yes | ✅ verified | all | — | Uses Laravel's typed dependent-value matching (JSON ints/bools/null match their string parameters); previously required_if/required_unless compared strictly and never matched non-string input. |
 | `required_if_accepted` | yes | no | ✅ verified | all | — | LaravelRuleParser had no case for this rule string (crashed with ArgumentCountError); fixed as part of issue #5. |
 | `required_if_declined` | yes | no | ✅ verified | 11.x+ | — |  |
-| `required_unless` | yes | no | ✅ verified | all | — | Uses Laravel's typed dependent-value matching (JSON ints/bools/null match their string parameters); previously required_if/required_unless compared strictly and never matched non-string input. |
-| `required_with` | yes | no | ✅ verified | all | — |  |
+| `required_unless` | yes | yes | ✅ verified | all | — | Uses Laravel's typed dependent-value matching (JSON ints/bools/null match their string parameters); previously required_if/required_unless compared strictly and never matched non-string input. |
+| `required_with` | yes | yes | ✅ verified | all | — |  |
 | `required_with_all` | yes | no | ✅ verified | all | — |  |
-| `required_without` | yes | no | ✅ verified | all | — |  |
+| `required_without` | yes | yes | ✅ verified | all | — |  |
 | `required_without_all` | yes | no | ✅ verified | all | — |  |
 
 ## Acceptance
@@ -94,48 +94,48 @@ Parity is verified against the real `illuminate/validation` on Laravel 10.x / 11
 | `doesnt_start_with` | yes | no | 🟡 partial | all | — | For a present null or [] this rule follows Laravel 13 (it fails); Laravel 12 and older pass it. |
 | `email` | yes | yes | ✅ verified | all | — |  |
 | `encoding` | yes | no | ✅ verified | 12.x+ | — | Laravel 12 rule. An encoding mbstring does not know throws InvalidArgumentException when the rule is built, where Laravel throws on first validation. Laravel's File-content check is not applied. Also available on older Laravel versions, where the parity test is skipped. |
-| `ends_with` | yes | no | ✅ verified | all | — |  |
+| `ends_with` | yes | yes | ✅ verified | all | — |  |
 | `hex_color` | yes | no | ✅ verified | 10.x+ | — |  |
 | `ip` | yes | yes | ✅ verified | all | — |  |
 | `ipv4` | yes | yes | ✅ verified | all | — | Fixed: the ipv4 alias used to build an unrestricted IpRule and behave like plain 'ip'. Failures are reported as 'ipv4', like Laravel. |
 | `ipv6` | yes | yes | ✅ verified | all | — | Fixed together with ipv4; failures are reported as 'ipv6'. |
 | `lowercase` | yes | no | ✅ verified | all | — |  |
 | `mac_address` | yes | no | ✅ verified | all | — |  |
-| `not_regex` | yes | no | ✅ verified | all | — |  |
-| `regex` | yes | no | ✅ verified | all | — |  |
-| `starts_with` | yes | no | ✅ verified | all | — |  |
+| `not_regex` | yes | yes | ✅ verified | all | — |  |
+| `regex` | yes | yes | ✅ verified | all | — |  |
+| `starts_with` | yes | yes | ✅ verified | all | — |  |
 | `ulid` | yes | no | ✅ verified | all | — |  |
 | `uppercase` | yes | no | ✅ verified | all | — |  |
 | `url` | yes | yes | ✅ verified | all | — |  |
-| `uuid` | yes | no | ✅ verified | all | — |  |
+| `uuid` | yes | yes | ✅ verified | all | — |  |
 
 ## Numbers & size
 
 | Rule | Engine | Native | Parity | Laravel | Dependencies | Notes |
 | :--- | :---: | :---: | :--- | :--- | :--- | :--- |
-| `between` | yes | no | ✅ verified | all | — |  |
-| `digits` | yes | no | ✅ verified | all | — |  |
-| `digits_between` | yes | no | ✅ verified | all | — | Crashed via rule string before issue #5 (LaravelRuleParser cast params to float, but DigitsBetweenRule's constructor requires int); fixed. |
+| `between` | yes | yes | ✅ verified | all | — |  |
+| `digits` | yes | yes | ✅ verified | all | — |  |
+| `digits_between` | yes | yes | ✅ verified | all | — | Crashed via rule string before issue #5 (LaravelRuleParser cast params to float, but DigitsBetweenRule's constructor requires int); fixed. |
 | `max` | yes | yes | ✅ verified | all | — |  |
 | `max_digits` | yes | no | 🟡 partial | all | — | For a present null or [] this rule follows Laravel 13 (it fails); Laravel 12 and older pass it. |
 | `min` | yes | yes | ✅ verified | all | — |  |
 | `min_digits` | yes | no | ✅ verified | all | — |  |
 | `multiple_of` | yes | no | ✅ verified | all | — |  |
-| `size` | yes | no | ✅ verified | all | — |  |
+| `size` | yes | yes | ✅ verified | all | — |  |
 
 ## Comparison
 
 | Rule | Engine | Native | Parity | Laravel | Dependencies | Notes |
 | :--- | :---: | :---: | :--- | :--- | :--- | :--- |
 | `confirmed` | yes | no | ✅ verified | all | — |  |
-| `different` | yes | no | ✅ verified | all | — |  |
+| `different` | yes | yes | ✅ verified | all | — |  |
 | `gt` | yes | no | ✅ verified | all | — |  |
 | `gte` | yes | no | ✅ verified | all | — |  |
-| `in` | yes | no | ✅ verified | all | — |  |
+| `in` | yes | yes | ✅ verified | all | — |  |
 | `lt` | yes | no | ✅ verified | all | — |  |
 | `lte` | yes | no | ✅ verified | all | — |  |
-| `not_in` | yes | no | ✅ verified | all | — |  |
-| `same` | yes | no | ✅ verified | all | — |  |
+| `not_in` | yes | yes | ✅ verified | all | — |  |
+| `same` | yes | yes | ✅ verified | all | — |  |
 
 ## Dates
 
@@ -146,7 +146,7 @@ Parity is verified against the real `illuminate/validation` on Laravel 10.x / 11
 | `before` | yes | no | ✅ verified | all | — |  |
 | `before_or_equal` | yes | no | ✅ verified | all | — |  |
 | `date_equals` | yes | no | ✅ verified | all | — |  |
-| `date_format` | yes | no | ✅ verified | all | — |  |
+| `date_format` | yes | yes | ✅ verified | all | — |  |
 | `timezone` | yes | no | ✅ verified | all | — |  |
 
 ## Arrays

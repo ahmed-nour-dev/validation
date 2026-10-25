@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Vi\Validation\Rules;
 
+use Vi\Validation\Compilation\NativeCompilationContext;
 use Vi\Validation\Execution\ValidationContext;
 
 #[RuleName(RuleId::DIFFERENT)]
-final class DifferentRule implements RuleInterface
+final class DifferentRule implements RuleInterface, NativeCompilableInterface
 {
     private string $otherField;
 
@@ -25,5 +26,19 @@ final class DifferentRule implements RuleInterface
         }
 
         return null;
+    }
+
+    public function compileNative(NativeCompilationContext $context): string
+    {
+        $v = $context->valName;
+        $i = $context->indent;
+
+        return "{$i}{$v}_o = " . NativeCompilationContext::lookup($this->otherField) . ";\n"
+            . $context->emitError("{$v} === {$v}_o", 'different');
+    }
+
+    public function isImplicitForNative(): bool
+    {
+        return false;
     }
 }

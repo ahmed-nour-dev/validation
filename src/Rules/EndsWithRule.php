@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Vi\Validation\Rules;
 
+use Vi\Validation\Compilation\NativeCompilationContext;
 use Vi\Validation\Execution\ValidationContext;
 
 #[RuleName(RuleId::ENDS_WITH)]
-final class EndsWithRule implements RuleInterface
+final class EndsWithRule implements RuleInterface, NativeCompilableInterface
 {
     /** @var list<string> */
     private array $values;
@@ -43,5 +44,24 @@ final class EndsWithRule implements RuleInterface
             'rule' => 'ends_with',
             'params' => ['values' => implode(', ', $this->values)],
         ];
+    }
+
+    public function compileNative(NativeCompilationContext $context): string
+    {
+        $v = $context->valName;
+        $checks = array_map(
+            static fn (mixed $affix): string => 'str_ends_with(' . $v . '_s, ' . NativeCompilationContext::literal($affix) . ')',
+            $this->values
+        );
+        $matches = $checks === [] ? 'false' : implode(' || ', $checks);
+        $i = $context->indent;
+
+        return "{$i}{$v}_s = is_numeric({$v}) ? (string) {$v} : {$v};\n"
+            . $context->emitError("(!is_string({$v}_s) || !({$matches}))", 'ends_with', "['values' => " . NativeCompilationContext::literal(implode(', ', $this->values)) . ']');
+    }
+
+    public function isImplicitForNative(): bool
+    {
+        return false;
     }
 }

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Vi\Validation\Rules;
 
+use Vi\Validation\Compilation\NativeCompilationContext;
+use Vi\Validation\Compilation\NativeSizeCompiler;
 use Vi\Validation\Execution\ValidationContext;
 
 #[RuleName(RuleId::BETWEEN)]
-final class BetweenRule implements RuleInterface, NumericAwareInterface
+final class BetweenRule implements RuleInterface, NumericAwareInterface, NativeCompilableInterface
 {
     private int|float $min;
     private int|float $max;
@@ -64,5 +66,23 @@ final class BetweenRule implements RuleInterface, NumericAwareInterface
         }
 
         return 0;
+    }
+
+    public function compileNative(NativeCompilationContext $context): string
+    {
+        $v = $context->valName;
+        $min = NativeCompilationContext::literal($this->min);
+        $max = NativeCompilationContext::literal($this->max);
+        $inner = $context->withIndent($context->indent . '    ');
+
+        return NativeSizeCompiler::emitSize($context, $this->isNumeric)
+            . "{$context->indent}if (\$size < {$min} || \$size > {$max}) {\n"
+            . $inner->errorStatement('between', "['type' => \$type_tag, 'min' => {$min}, 'max' => {$max}]")
+            . "{$context->indent}}\n";
+    }
+
+    public function isImplicitForNative(): bool
+    {
+        return false;
     }
 }

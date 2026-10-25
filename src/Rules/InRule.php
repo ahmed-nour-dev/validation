@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Vi\Validation\Rules;
 
+use Vi\Validation\Compilation\NativeCompilationContext;
 use Vi\Validation\Execution\ValidationContext;
 
 #[RuleName(RuleId::IN)]
-final class InRule implements RuleInterface
+final class InRule implements RuleInterface, NativeCompilableInterface
 {
     /** @var list<string> */
     private array $values;
@@ -54,5 +55,34 @@ final class InRule implements RuleInterface
         }
 
         return null;
+    }
+
+    public function compileNative(NativeCompilationContext $context): string
+    {
+        $v = $context->valName;
+        $list = NativeCompilationContext::literal($this->values);
+        $i = $context->indent;
+        $scalar = "(is_scalar({$v}) || {$v} instanceof \\Stringable)";
+        $notIn = "!in_array((string) {$v}, {$list}, true)";
+
+        if (!$this->arrayContext) {
+            return $context->emitError("(!{$scalar} || {$notIn})", 'in');
+        }
+
+        // With an `array` rule on the field every element must be in the list.
+        return "{$i}if (is_array({$v})) {\n"
+            . "{$i}    \$in_ok = true;\n"
+            . "{$i}    foreach ({$v} as \$in_item) {\n"
+            . "{$i}        if (!is_scalar(\$in_item) || !in_array((string) \$in_item, {$list}, true)) { \$in_ok = false; break; }\n"
+            . "{$i}    }\n"
+            . "{$i}} else {\n"
+            . "{$i}    \$in_ok = {$scalar} && in_array((string) {$v}, {$list}, true);\n"
+            . "{$i}}\n"
+            . $context->emitError('!$in_ok', 'in');
+    }
+
+    public function isImplicitForNative(): bool
+    {
+        return false;
     }
 }

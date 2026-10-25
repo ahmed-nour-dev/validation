@@ -58,7 +58,10 @@ final class PropertyTest extends TestCase
      */
     private function nativeRules(Fuzzer $f): array
     {
-        $pool = ['required', 'string', 'integer', 'numeric', 'boolean', 'array', 'email', 'url', 'ip', 'ipv4', 'ipv6', 'json', 'alpha', 'alpha_num', 'alpha_dash', 'min', 'max'];
+        $pool = ['required', 'string', 'integer', 'numeric', 'boolean', 'array', 'email', 'url', 'ip', 'ipv4', 'ipv6', 'json', 'alpha', 'alpha_num', 'alpha_dash', 'min', 'max',
+            'in:a,1,true,php', 'not_in:a,1,x', 'regex:/^[a-z0-9]+$/', 'not_regex:/^[0-9]+$/', 'date_format:Y-m-d', 'between:1,5', 'between:-2.5,10',
+            'size:3', 'size:1', 'digits:2', 'digits_between:1,3', 'uuid', 'starts_with:a,1', 'ends_with:z,0', 'same:b', 'different:c',
+            'required_if:b,1,true,null', 'required_unless:c,a', 'required_with:b,c', 'required_without:b'];
         $rules = [];
 
         foreach (self::FIELDS as $field) {
@@ -79,6 +82,9 @@ final class PropertyTest extends TestCase
             for ($i = 0, $n = $f->int(1, 4); $i < $n; $i++) {
                 $rule = $f->pick($pool);
                 $parts[] = in_array($rule, ['min', 'max'], true) ? $rule . ':' . $f->pick(['0', '1', '3', '18', '2.5', '-1']) : $rule;
+                if ($rule === 'array' && $f->bool(50)) {
+                    $parts[] = $f->pick(['in:php,go', 'not_in:php', 'size:2']);
+                }
             }
             $rules[$field] = implode('|', array_unique($parts));
         }

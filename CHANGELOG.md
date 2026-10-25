@@ -5,9 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.3.0] - 2026-10-25
 
 ### Added
+- Batched `exists`/`unique` lookups for large imports. `SchemaValidator::enableBatchLookups($lookahead)` (or
+  `performance.batch_lookups` / `FAST_VALIDATION_BATCH_LOOKUPS`, plus `performance.lookahead` /
+  `FAST_VALIDATION_LOOKAHEAD`) answers `exists`/`unique` from one `whereIn` query per chunk instead of one per row.
+  Applies to `validateMany()`, `stream()`, `each()`, `failures()`, `report()`, `firstFailureWithIndex()` and
+  `ChunkedValidator`; streaming reads at most `lookahead` rows ahead, so memory stays bounded. Respects
+  `Rule::unique()->ignore()` and scalar `where` constraints. Closure constraints, custom presence verifiers and values
+  the database might match through its collation fall back to per-row queries, so results match the per-row path.
+  Opt-in, off by default. Standalone database validators implement the new `BatchDatabaseValidatorInterface`
+  (`matchingValues()`); `PresenceVerifierDatabaseValidator` already does. Verified on SQLite only.
+- Head-to-head benchmark against `sandermuller` and `yorcreative` validators.
 - Native compilation now covers `in`, `not_in`, `regex`, `not_regex`, `date_format`, `between`, `size`, `digits`,
   `digits_between`, `uuid`, `starts_with`, `ends_with`, `same`, `different`, `required_if`, `required_unless`,
   `required_with` and `required_without` (on top of the original 17 plus `sometimes`), so the `order_lines` and

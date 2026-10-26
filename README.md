@@ -54,6 +54,37 @@ Same rows, same machine, string rules, best of 3 runs of 2,000 rows (`composer b
 
 ---
 
+## 🧭 Is This for You?
+
+**Use it for** imports and ETL, high-throughput APIs, streaming or chunked validation of large files, and long-running workers (Octane, Swoole, RoadRunner), where the same rules run over many rows and a compile-once schema pays off.
+
+**Skip it if** you only validate a handful of small form requests per page load. Laravel's built-in validator is fast enough there, and you gain nothing from compiling a schema.
+
+**Current gaps, so you don't find them after installing:**
+
+- **Wildcard attributes** (`items.*.name`) are supported, but wildcard schemas always run on the engine and are never natively compiled. Expect the 25–35× engine-column speedups, not the 86× native figure.
+- **Native compilation** covers a fixed subset of rules; `unique`, `exists`, `distinct`, `date`, file rules and closures fall back to the engine. See the [native compilation contract](#native-compilation-compatibility-contract) and the [rule matrix](docs/rules.md).
+- **Laravel parity** is not complete: a few rules (`exists`, `unique`, `current_password`, `distinct`, and some Laravel 12/13 null and empty-array edge cases) are only partly at parity. See [Parity & Compatibility](#-parity--compatibility).
+- **Not covered at all:** DTO-derived validation and client-side (JavaScript) validation.
+
+## 🔀 Alternatives
+
+Different packages solve different problems. If your need is in the left column, consider the package on the right. Descriptions are based on each project's own documentation, checked on 2026-10-26; check the linked pages for current details.
+
+| Need | Package to consider |
+| :--- | :--- |
+| Large imports, streaming, constant memory, Octane | **ahmednour/validation** (this package) |
+| Fast wildcard validation (`items.*.name`) plus a fluent rule builder | [`sandermuller/laravel-fluent-validation`](https://packagist.org/packages/sandermuller/laravel-fluent-validation) |
+| Zero-dependency validator with wildcard support | [`yorcreative/data-validation`](https://packagist.org/packages/yorcreative/data-validation) |
+| Typed, immutable rule objects for Octane safety | [`larapkgs/validation`](https://packagist.org/packages/larapkgs/validation) |
+| Validation derived from DTOs | [`spatie/laravel-data`](https://github.com/spatie/laravel-data) |
+| Client-side validation from your existing rules | [`proengsoft/laravel-jsvalidation`](https://packagist.org/packages/proengsoft/laravel-jsvalidation) |
+| Standalone validation outside Laravel | [`Respect/Validation`](https://packagist.org/packages/respect/validation), [`vlucas/valitron`](https://packagist.org/packages/vlucas/valitron) |
+
+ahmednour/validation also works standalone without Laravel (see [Standalone PHP](#1-standalone-php)), but it is built around Laravel-style rule strings; the two standalone libraries above use their own rule APIs.
+
+---
+
 ## 🌟 Why ahmednour/validation?
 
 - **Compile Once, Validate Many**: Schemas are compiled into optimized execution plans, eliminating repetitive parsing overhead.
@@ -66,6 +97,8 @@ Same rows, same machine, string rules, best of 3 runs of 2,000 rows (`composer b
 
 ## 📚 Table of Contents
 
+- [Is This for You?](#-is-this-for-you)
+- [Alternatives](#-alternatives)
 - [Installation](#-installation)
 - [Compatibility](#-compatibility)
 - [Quick Start](#-quick-start)

@@ -502,7 +502,7 @@ $schema = Validator::schema()
 
 ### 🛠 Supported Rules
 
-Nearly every standard Laravel rule is supported; a few (`exists`, `unique`, `current_password`, `distinct`, and the Laravel 12/13 `null`/`[]` edge cases) are only partly at parity, see the [known divergences](#-parity--compatibility). Wildcard attributes work too (`items.*.sku`, `a.*.b.*.c`; error keys like `items.0.sku`, `*` in sibling references bound to the same element). Wildcard schemas run on the engine and are never natively compiled. Rule objects such as
+Nearly every standard Laravel rule is supported; a few (`exists`, `unique`, `current_password`, `distinct`, and the Laravel 12/13 null and empty-array edge cases) are only partly at parity, see the [known divergences](#-parity--compatibility). Wildcard attributes work too (`items.*.sku`, `a.*.b.*.c`; error keys like `items.0.sku`, `*` in sibling references bound to the same element). Wildcard schemas run on the engine and are never natively compiled. Rule objects such as
 `Rule::in()` and your own `ValidationRule` classes work too. See the full
 **[rule compatibility matrix](docs/rules.md)** for engine/native support, Laravel parity status,
 dependencies and known differences for every rule.

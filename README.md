@@ -11,6 +11,9 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/ahmednour/validation.svg?style=flat-square)](https://packagist.org/packages/ahmednour/validation)
 [![Total Downloads](https://img.shields.io/packagist/dt/ahmednour/validation.svg?style=flat-square)](https://packagist.org/packages/ahmednour/validation)
+[![CI](https://img.shields.io/github/actions/workflow/status/ahmed-nour-dev/validation/ci.yml?branch=main&label=CI&style=flat-square)](https://github.com/ahmed-nour-dev/validation/actions/workflows/ci.yml)
+[![PHP Version](https://img.shields.io/packagist/dependency-v/ahmednour/validation/php?style=flat-square)](https://packagist.org/packages/ahmednour/validation)
+[![Laravel](https://img.shields.io/badge/Laravel-10%20%7C%2011%20%7C%2012%20%7C%2013-FF2D20?style=flat-square&logo=laravel&logoColor=white)](https://laravel.com)
 
 **ahmednour/validation** is a blazing fast, memory-efficient validation library designed for high-performance applications. Whether you are processing large datasets, building high-frequency APIs, or running long-lived processes (Octane, Swoole), this library handles it with minimal overhead.
 

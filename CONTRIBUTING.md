@@ -9,6 +9,7 @@ By participating in this project, you are expected to uphold our Code of Conduct
 ## How Can I Contribute?
 
 ### Reporting Bugs
+- **Security vulnerabilities:** don't open a public issue. Report them privately as described in [SECURITY.md](SECURITY.md).
 - Use a clear and descriptive title.
 - Describe the exact steps which reproduce the problem.
 - Provide a code snippet that demonstrates the issue.

@@ -6,11 +6,17 @@ on:
   pull_request:
     branches: [ main, master ]
 
+# Composer 2.9+ refuses to resolve versions with known advisories. Advisories are checked by
+# security-audit.yml instead, so an unfixed advisory fails that check, not the test jobs.
+env:
+  COMPOSER_NO_SECURITY_BLOCKING: '1'
+
 # Supported combinations live only here and in composer.json's "php"/"illuminate/validation"
 # constraints — adding a new PHP or Laravel release means adding one array entry (and an
 # `exclude` row if a Laravel major raises its minimum PHP version), no other restructuring.
 # Anything not listed in `php` x `laravel` below is unsupported and untested; see the
 # "Compatibility" section of README.md for the human-readable version of this matrix.
+# security-audit.yml repeats this matrix; keep the two in sync.
 jobs:
   test:
     runs-on: ubuntu-latest

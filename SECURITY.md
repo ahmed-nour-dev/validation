@@ -81,6 +81,8 @@ Usually out of scope:
 - Running without a signing key in standalone mode, or with the cache directory inside the web
   root or world-writable, against the documented guidance.
 - Vulnerabilities in dependencies such as `illuminate/validation`. Please report those to the
-  upstream project. If this package makes one exploitable, tell us too.
+  upstream project. If this package makes one exploitable, tell us too. Dependencies are
+  checked daily with `composer audit`; see
+  [Dependency Security Auditing](CONTRIBUTING.md#dependency-security-auditing).
 
 If you're unsure whether something is in scope, report it anyway.

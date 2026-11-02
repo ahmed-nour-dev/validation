@@ -37,5 +37,32 @@ By participating in this project, you are expected to uphold our Code of Conduct
 4. Run static analysis: `./vendor/bin/phpstan analyse`.
 
 
+## GitHub Actions Pinning
+
+Every action in `.github/workflows/` is pinned to a full 40-character commit SHA, with the release tag in a
+comment beside it:
+
+```yaml
+uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+```
+
+Tags can be moved; commit SHAs cannot. Pinning means CI only runs action code that has been reviewed.
+
+**Updating pins**
+
+- Dependabot (`.github/dependabot.yml`) checks weekly and opens a PR that updates both the SHA and the version
+  comment. Review the upstream release notes and diff before merging.
+- To update a pin by hand, resolve the tag to its commit and confirm it matches the release on GitHub:
+
+  ```bash
+  gh api repos/actions/checkout/commits/v4.4.0 --jq .sha
+  ```
+
+  Replace the SHA and update the version comment. Never pin a SHA from a fork or an unreleased branch.
+- When an upstream security advisory is published for an action we use, update that pin right away rather than
+  waiting for the weekly run.
+- New workflow steps must follow the same format. Do not reference an action by tag or branch alone.
+
+
 ## Attribution
 Our contributing guidelines are inspired by plenty of successful open-source projects.

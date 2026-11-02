@@ -1,0 +1,67 @@
+name: Security audit
+
+# Runs `composer audit` against every supported dependency set. Kept separate from ci.yml so a
+# newly published advisory shows up as a failed "Security audit" check, not as a test failure.
+# The daily schedule catches advisories published while no pull request is open.
+# See "Dependency Security Auditing" in CONTRIBUTING.md for how to handle a failure.
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  schedule:
+    - cron: '23 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  # Composer 2.9+ refuses to resolve versions with known advisories. Turn that off here so the
+  # tree resolves the way it does for users, and the audit step reports the advisory by name.
+  COMPOSER_NO_SECURITY_BLOCKING: '1'
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      # Same supported PHP x Laravel combinations as ci.yml. Keep the two in sync.
+      matrix:
+        php: [8.1, 8.2, 8.3, 8.4]
+        laravel: ['10.*', '11.*', '12.*', '13.*']
+        exclude:
+          - php: 8.1
+            laravel: '11.*'
+          - php: 8.1
+            laravel: '12.*'
+          - php: 8.1
+            laravel: '13.*'
+          - php: 8.2
+            laravel: '13.*'
+          - php: 8.4
+            laravel: '10.*'
+
+    name: Audit PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip, pdo, sqlite, pdo_sqlite, bcmath, intl, iconv, fileinfo
+          coverage: none
+
+      # Resolves the dependency tree only. Nothing is downloaded and no package scripts run.
+      - name: Resolve dependencies
+        run: |
+          composer require "illuminate/validation:${{ matrix.laravel }}" --no-interaction --no-update
+          composer update --no-install --no-interaction --no-progress
+
+      # Fails on any security advisory not listed in composer.json's config.audit.ignore.
+      # Abandoned packages are reported as warnings only.
+      - name: Run composer audit
+        run: composer audit --locked --abandoned=report

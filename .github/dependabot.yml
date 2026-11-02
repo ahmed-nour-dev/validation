@@ -10,3 +10,15 @@ updates:
       github-actions:
         patterns:
           - "*"
+
+  # Opens a PR when a new release falls outside a composer.json constraint.
+  # The PR runs the full CI matrix and the security audit before it can be merged.
+  # No composer.lock is committed (this is a library), so in-range releases need no PR.
+  - package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      composer:
+        patterns:
+          - "*"

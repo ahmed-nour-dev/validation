@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace Vi\Validation\Laravel;
 
 use Generator;
+use Illuminate\Container\Container;
+use Illuminate\Contracts\Translation\Translator as TranslatorContract;
 use Illuminate\Contracts\Validation\Validator as LaravelValidatorContract;
 use Illuminate\Support\MessageBag;
+use Illuminate\Translation\ArrayLoader;
+use Illuminate\Translation\Translator;
 use Illuminate\Validation\ValidationException;
 use Vi\Validation\Execution\ValidationResult;
 use Vi\Validation\SchemaValidator;
@@ -14,6 +18,8 @@ use Vi\Validation\SchemaValidator;
 final class FastValidatorWrapper implements LaravelValidatorContract
 {
     private SchemaValidator $validator;
+
+    private ?TranslatorContract $fallbackTranslator = null;
 
     /** @var iterable<string, mixed> */
     private iterable $data;
@@ -41,6 +47,8 @@ final class FastValidatorWrapper implements LaravelValidatorContract
 
     /**
      * @param iterable<string, mixed> $data Array or generator of data to validate
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function __construct(SchemaValidator $validator, iterable $data, ?\Vi\Validation\Rules\RuleRegistry $registry = null)
     {
@@ -224,6 +232,25 @@ final class FastValidatorWrapper implements LaravelValidatorContract
     public function getMessageBag(): MessageBag
     {
         return $this->errors();
+    }
+
+    /**
+     * Laravel's translator, as on Laravel's own validator. ValidationException calls this to
+     * build its summary ("... (and 2 more errors)"), so without it a failing validated() or
+     * validate() with two or more errors crashed instead of throwing ValidationException.
+     * Falls back to a translator that returns keys as-is when no app translator is bound.
+     */
+    public function getTranslator(): TranslatorContract
+    {
+        $container = Container::getInstance();
+        if ($container->bound('translator')) {
+            $translator = $container->make('translator');
+            if ($translator instanceof TranslatorContract) {
+                return $translator;
+            }
+        }
+
+        return $this->fallbackTranslator ??= new Translator(new ArrayLoader(), 'en');
     }
 
     /**

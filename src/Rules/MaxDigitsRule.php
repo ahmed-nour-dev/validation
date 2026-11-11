@@ -8,6 +8,8 @@ use Vi\Validation\Execution\ValidationContext;
 
 /**
  * The integer value must have at most :max digits (Laravel `max_digits`).
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 #[RuleName(RuleId::MAX_DIGITS)]
 final class MaxDigitsRule implements RuleInterface

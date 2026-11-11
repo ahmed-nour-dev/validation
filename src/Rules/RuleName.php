@@ -6,6 +6,9 @@ namespace Vi\Validation\Rules;
 
 use Attribute;
 
+/**
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
+ */
 #[Attribute(Attribute::TARGET_CLASS)]
 final class RuleName
 {

@@ -63,6 +63,9 @@ final class SchemaFingerprint
     ) {
     }
 
+    /**
+     * @internal Not part of the public API; see docs/public-api.md.
+     */
     public static function of(CompiledSchema $schema): self
     {
         $unstable = [];

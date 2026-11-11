@@ -260,6 +260,9 @@ final class NativeArtifactRepository
         return self::$stats;
     }
 
+    /**
+     * @internal Not part of the public API; see docs/public-api.md.
+     */
     public static function resetStats(): void
     {
         self::$stats = ['generated' => 0, 'loaded' => 0, 'memory_hits' => 0, 'rejected' => 0];

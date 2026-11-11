@@ -12,6 +12,8 @@ namespace Vi\Validation\Compilation;
  * bookkeeping convention, so a rule's compileNative() only has to describe
  * *when* it fails (a PHP boolean expression) and *what* to report - never
  * how the surrounding closure represents errors or indentation.
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 final class NativeCompilationContext
 {

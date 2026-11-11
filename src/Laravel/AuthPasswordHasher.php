@@ -13,6 +13,8 @@ use Vi\Validation\Rules\PasswordHasherInterface;
  * Backs `current_password` with Laravel's auth + hasher, like Laravel's validator: the value
  * must match the authenticated user's password on the default guard, and a guest never
  * passes.
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 final class AuthPasswordHasher implements PasswordHasherInterface
 {

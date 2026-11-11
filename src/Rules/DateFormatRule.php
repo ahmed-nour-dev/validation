@@ -8,6 +8,9 @@ use DateTimeImmutable;
 use Vi\Validation\Compilation\NativeCompilationContext;
 use Vi\Validation\Execution\ValidationContext;
 
+/**
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
+ */
 #[RuleName(RuleId::DATE_FORMAT)]
 final class DateFormatRule implements RuleInterface, NativeCompilableInterface
 {

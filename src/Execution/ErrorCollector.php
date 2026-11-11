@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Vi\Validation\Execution;
 
+/**
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
+ */
 final class ErrorCollector
 {
     /** @var array<string, list<array{rule: string, params: array<string, mixed>, message: string|null}>> */

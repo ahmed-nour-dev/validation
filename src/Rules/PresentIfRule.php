@@ -9,6 +9,8 @@ use Vi\Validation\Execution\ValidationContext;
 /**
  * Laravel `present_if:other,value,...`: the field must be present (it may be empty) when the other
  * field equals one of the values.
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 #[RuleName(RuleId::PRESENT_IF)]
 final class PresentIfRule implements RuleInterface

@@ -8,6 +8,8 @@ use Vi\Validation\Execution\ValidationContext;
 
 /**
  * The value must be an array containing at least one of the listed keys (Laravel `in_array_keys`).
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 #[RuleName(RuleId::IN_ARRAY_KEYS)]
 final class InArrayKeysRule implements RuleInterface

@@ -9,6 +9,9 @@ use Vi\Validation\Rules\ClosureRule;
 use Vi\Validation\Rules\RuleInterface;
 use Vi\Validation\Rules\RuleRegistry;
 
+/**
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
+ */
 final class LaravelRuleParser
 {
     private RuleRegistry $registry;

@@ -6,6 +6,9 @@ namespace Vi\Validation\Laravel;
 
 use Illuminate\Contracts\Validation\Factory as LaravelValidatorFactory;
 
+/**
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
+ */
 final class LaravelValidatorAdapter implements LaravelValidatorFactory
 {
     private FastValidatorFactory $fastFactory;

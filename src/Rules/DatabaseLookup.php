@@ -7,6 +7,8 @@ namespace Vi\Validation\Rules;
 /**
  * The identity of an `exists` / `unique` lookup: two checks with the same key can be answered
  * by the same query result.
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 final class DatabaseLookup
 {

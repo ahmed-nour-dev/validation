@@ -9,6 +9,8 @@ use Vi\Validation\Execution\ValidationContext;
 
 /**
  * Laravel `prohibited_if_accepted:other`: the field is prohibited when the other field is accepted.
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 #[RuleName(RuleId::PROHIBITED_IF_ACCEPTED)]
 final class ProhibitedIfAcceptedRule implements RuleInterface

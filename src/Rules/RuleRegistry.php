@@ -26,6 +26,8 @@ final class RuleRegistry
      * Register a single rule class by reading its #[RuleName] attribute.
      *
      * @param class-string<RuleInterface> $class
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function register(string $class): void
     {
@@ -119,6 +121,8 @@ final class RuleRegistry
      * Register multiple rule classes.
      *
      * @param array<class-string<RuleInterface>> $classes
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function registerMany(array $classes): void
     {
@@ -143,6 +147,8 @@ final class RuleRegistry
      * Get the class string for a rule by name, alias, or RuleId.
      *
      * @return class-string<RuleInterface>|null
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function get(string|RuleId $name): ?string
     {
@@ -166,6 +172,8 @@ final class RuleRegistry
      * Get all registered rules.
      *
      * @return array<string, class-string<RuleInterface>>
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function all(): array
     {
@@ -176,6 +184,8 @@ final class RuleRegistry
      * Resolve a rule instance by name, alias, or RuleId.
      *
      * @throws InvalidArgumentException
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function resolve(string|RuleId $name): RuleInterface
     {

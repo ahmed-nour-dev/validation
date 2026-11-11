@@ -9,6 +9,8 @@ use Vi\Validation\Execution\ValidationContext;
 
 /**
  * Laravel `required_if_declined:other`: the field is required when the other field is declined.
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 #[RuleName(RuleId::REQUIRED_IF_DECLINED)]
 final class RequiredIfDeclinedRule implements RuleInterface

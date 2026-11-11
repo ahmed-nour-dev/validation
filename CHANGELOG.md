@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- [docs/public-api.md](docs/public-api.md) defines the public API (standalone and Laravel entry
+  points, result objects, configuration keys and defaults, extension interfaces, exceptions and
+  return shapes), the versioning policy before and after 1.0, and the deprecation policy. The
+  README and CONTRIBUTING link to it.
+- Implementation classes are tagged `@internal`, including the concrete rule classes in
+  `Rules\`, the Laravel adapters and parsers, and execution and codegen helpers. Some methods of
+  public classes are internal too (result-object constructors, most of `ValidationContext`,
+  `RuleRegistry::register()`/`resolve()`). Nothing changed in the code; these were never documented.
+- Contract tests in `tests/Unit/Contract/`: the public classes and methods exist and are not
+  internal, every class in `src/` is either public or `@internal`, the standalone and facade
+  entry points keep their return shapes, and the config keys, environment variables and defaults
+  match the README.
+
+### Fixed
+- `FastValidatorWrapper::validated()` and `validate()` crashed with "Call to undefined method
+  getTranslator()" instead of throwing `ValidationException` when the data had two or more
+  errors, because Laravel's exception asks the validator for its translator to build its message.
+  This also affected form requests in override mode. The wrapper now has `getTranslator()`,
+  returning the app's translator when one is bound.
+- The `FastValidator::make()` facade docblock declared `$data` as `iterator` instead of `iterable`.
+
+### Deprecated
+- No new deprecations. `NativeCompiler::generateKey()` and `ValidatorCompiler::writeNative()`,
+  deprecated since 0.1.0, may be removed in 0.4.0.
+
 ## [0.3.0] - 2026-10-25
 
 ### Added

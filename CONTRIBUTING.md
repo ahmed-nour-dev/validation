@@ -27,6 +27,22 @@ By participating in this project, you are expected to uphold our Code of Conduct
 - Maintain existing coding standards (PSR-12).
 - Document any change in behavior.
 - Add tests for new features or bug fixes (aim for high coverage).
+- Follow the [public API policy](docs/public-api.md) (see below).
+
+## Public API and Deprecations
+
+[docs/public-api.md](docs/public-api.md) defines what is public and how it may change. In short:
+
+- **New classes** are internal unless you mean to support them. Tag them `@internal` in the class
+  docblock, or list them in `docs/public-api.md` and in `PublicSurfaceTest::PUBLIC_API`.
+  `PublicSurfaceTest` fails for a class that is neither.
+- **Breaking a public API** (removing or renaming something, changing a return shape, a config
+  default or validation results) needs a minor release before 1.0 and a major release after.
+  Say so in the CHANGELOG under **Changed** or **Removed**, with an upgrade note.
+- **Deprecating** something: add `@deprecated` with the version, the replacement and the earliest
+  removal version, list it under **Deprecated** in the CHANGELOG and in the "Currently deprecated"
+  table of `docs/public-api.md`. Keep it working until it is removed.
+- If you have to change a test in `tests/Unit/Contract/`, the change is breaking: treat it as one.
 
 
 ## Development Setup

@@ -8,6 +8,8 @@ use Vi\Validation\Execution\ValidationContext;
 
 /**
  * The field under validation must be present in the input data (but can be empty).
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 #[RuleName(RuleId::PRESENT)]
 final class PresentRule implements RuleInterface

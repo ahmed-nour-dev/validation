@@ -10,6 +10,8 @@ namespace Vi\Validation\Compilation;
  * classes themselves purely to avoid duplicating this one non-trivial block
  * twice - it is still the rule that decides what to compile (limit, numeric
  * mode, operator), this just emits the code for it.
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 final class NativeMinMaxCompiler
 {

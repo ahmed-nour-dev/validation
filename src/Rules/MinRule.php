@@ -8,6 +8,9 @@ use Vi\Validation\Compilation\NativeCompilationContext;
 use Vi\Validation\Compilation\NativeMinMaxCompiler;
 use Vi\Validation\Execution\ValidationContext;
 
+/**
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
+ */
 #[RuleName(RuleId::MIN)]
 final class MinRule implements RuleInterface, NumericAwareInterface, NativeCompilableInterface
 {

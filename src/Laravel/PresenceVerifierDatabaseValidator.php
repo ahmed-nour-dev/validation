@@ -16,6 +16,8 @@ use Vi\Validation\Rules\BatchDatabaseValidatorInterface;
  *
  * Accepts either a verifier or a resolver closure; the closure is only called on the first
  * database rule evaluated, so apps that never use exists/unique never touch the database.
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 final class PresenceVerifierDatabaseValidator implements BatchDatabaseValidatorInterface
 {

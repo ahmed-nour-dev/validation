@@ -83,6 +83,8 @@ final class NativeCompiler
      * True iff the rule implements NativeCompilableInterface - there is no
      * other path to "supported" (no class-name list, no capability
      * guessing), so a new rule is unsupported by default until it opts in.
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function isSupported(RuleInterface $rule): bool
     {
@@ -96,6 +98,8 @@ final class NativeCompiler
      *         that cannot be natively inlined. Callers must fall back to
      *         ValidatorEngine in that case rather than using a partial
      *         native validator.
+     *
+     * The generated source is internal and may change in any release; see docs/public-api.md.
      */
     public function compile(CompiledSchema $schema): string
     {

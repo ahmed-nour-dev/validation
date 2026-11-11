@@ -8,6 +8,8 @@ use Vi\Validation\Messages\MessageResolver;
 
 /**
  * NativeValidator executes a precompiled PHP closure for maximum performance.
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 final class NativeValidator
 {

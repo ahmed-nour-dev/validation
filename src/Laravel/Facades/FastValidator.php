@@ -9,7 +9,7 @@ use Vi\Validation\Laravel\FastValidatorFactory;
 use Vi\Validation\Laravel\FastValidatorWrapper;
 
 /**
- * @method static FastValidatorWrapper make(iterator $data, array $rules, array $messages = [], array $attributes = [])
+ * @method static FastValidatorWrapper make(iterable $data, array $rules, array $messages = [], array $attributes = [])
  *
  * @see \Vi\Validation\Laravel\FastValidatorFactory
  */

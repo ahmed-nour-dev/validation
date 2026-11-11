@@ -10,6 +10,8 @@ namespace Vi\Validation\Execution;
  * Laravel treats a string that is empty *after trim()* as empty: `required`/`filled` reject
  * "   " and "\t\n", `prohibited` accepts them, and non-implicit rules (email, integer, min, ...)
  * are skipped for them. The characters are PHP trim()'s defaults: space, \t, \n, \r, \0, \x0B.
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 final class Emptiness
 {

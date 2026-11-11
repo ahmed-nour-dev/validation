@@ -11,6 +11,8 @@ use Vi\Validation\Execution\ValidationContext;
  *
  * This is the same check as `array:key1,key2`, as a dedicated rule with its own message that also
  * names the offending keys (`:unexpected`).
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 #[RuleName(RuleId::ARRAY_KEYS)]
 final class ArrayKeysRule implements RuleInterface

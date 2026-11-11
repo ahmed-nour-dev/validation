@@ -8,6 +8,9 @@ use Vi\Validation\Compilation\NativeCompilationContext;
 use Vi\Validation\Compilation\NativeSizeCompiler;
 use Vi\Validation\Execution\ValidationContext;
 
+/**
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
+ */
 #[RuleName(RuleId::BETWEEN)]
 final class BetweenRule implements RuleInterface, NumericAwareInterface, NativeCompilableInterface
 {

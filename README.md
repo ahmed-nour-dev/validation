@@ -114,6 +114,7 @@ ahmednour/validation also works standalone without Laravel (see [Standalone PHP]
   - [Localization & Custom Messages](#-localization--custom-messages)
   - [Long-Running Processes (Octane, Swoole, RoadRunner)](#-long-running-processes-octane-swoole-roadrunner)
 - [Configuration](#-configuration)
+- [Public API & Versioning](#-public-api--versioning)
 - [Testing](#-testing)
 - [License](#-license)
 
@@ -737,6 +738,23 @@ $validator = \Vi\Validation\SchemaValidator::build(
     ],
 );
 ```
+
+---
+
+## 🔒 Public API & Versioning
+
+[docs/public-api.md](docs/public-api.md) lists what you can rely on: the standalone and Laravel
+entry points, result objects, configuration keys and defaults, extension interfaces and
+exceptions. Anything tagged `@internal`, including the concrete rule classes, the Laravel
+adapters and the generated native code, can change in any release.
+
+- **Before 1.0:** patch releases (`0.3.x`) never break the public API; minor releases (`0.4.0`)
+  may, with an upgrade note in the [CHANGELOG](CHANGELOG.md). Require `^0.3` to stay on one minor.
+- **From 1.0:** strict SemVer. Breaking changes only in major releases.
+- **Deprecations** are marked `@deprecated` and listed in the CHANGELOG. They keep working for at
+  least one more minor release before 1.0, and until the next major release after it.
+
+`tests/Unit/Contract/` checks the documented entry points, return shapes and config defaults.
 
 ---
 

@@ -9,6 +9,8 @@ namespace Vi\Validation\Compilation;
  * (number as a float, string by character count, array by element count, anything else 0) and
  * report the same type tag. Emits statements that leave the measure in `$size` and the tag in
  * `$type_tag`; the rule appends its own comparison.
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 final class NativeSizeCompiler
 {

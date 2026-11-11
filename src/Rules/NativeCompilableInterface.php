@@ -27,6 +27,8 @@ use Vi\Validation\Compilation\NativeCompilationContext;
  * class - built-in or not - that implements it becomes eligible for native
  * inlining the moment NativeCompiler encounters it, with no registry
  * changes required elsewhere.
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 interface NativeCompilableInterface
 {

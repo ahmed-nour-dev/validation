@@ -18,6 +18,9 @@ namespace Vi\Validation\Execution;
  */
 final class ValidationFailure
 {
+    /**
+     * @internal Not part of the public API; see docs/public-api.md.
+     */
     public function __construct(
         public readonly int $index,
         public readonly int|string $key,

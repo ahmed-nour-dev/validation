@@ -9,6 +9,8 @@ use Vi\Validation\Execution\ValidationContext;
 
 /**
  * Marker rule for 'sometimes' logic.
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 #[RuleName(RuleId::SOMETIMES)]
 final class SometimesRule implements RuleInterface, NativeCompilableInterface

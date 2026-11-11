@@ -37,6 +37,8 @@ final class ValidatorCompiler
      * Compile and cache a schema.
      *
      * @param array<string, mixed> $rules
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function compile(string $key, array $rules, callable $compiler): CompiledSchema
     {
@@ -152,6 +154,9 @@ final class ValidatorCompiler
         }
     }
 
+    /**
+     * @internal Not part of the public API; see docs/public-api.md.
+     */
     public function getNativePath(string $key): string
     {
         return $this->cachePath . '/native/' . $key . '.php';
@@ -159,6 +164,8 @@ final class ValidatorCompiler
 
     /**
      * Load a precompiled schema.
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function loadPrecompiled(string $key): ?CompiledSchema
     {
@@ -215,6 +222,8 @@ final class ValidatorCompiler
 
     /**
      * Clear all precompiled schemas and native artifacts.
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function clearPrecompiled(): void
     {
@@ -253,6 +262,8 @@ final class ValidatorCompiler
      * Generate a cache key from rules.
      *
      * @param array<string, mixed> $rules
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public static function generateKey(array $rules): string
     {

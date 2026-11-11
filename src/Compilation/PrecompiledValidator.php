@@ -8,6 +8,9 @@ use Vi\Validation\Execution\CompiledSchema;
 use Vi\Validation\Execution\ValidationResult;
 use Vi\Validation\Execution\ValidatorEngine;
 
+/**
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
+ */
 final class PrecompiledValidator
 {
     private CompiledSchema $schema;

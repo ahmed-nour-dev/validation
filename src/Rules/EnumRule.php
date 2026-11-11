@@ -7,6 +7,9 @@ namespace Vi\Validation\Rules;
 use Vi\Validation\Execution\ValidationContext;
 use UnitEnum;
 
+/**
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
+ */
 #[RuleName(RuleId::ENUM)]
 final class EnumRule implements RuleInterface
 {

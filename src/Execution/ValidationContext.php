@@ -7,6 +7,12 @@ namespace Vi\Validation\Execution;
 use Vi\Validation\Rules\DatabaseValidatorInterface;
 use Vi\Validation\Rules\PasswordHasherInterface;
 
+/**
+ * The row being validated, as seen by a rule.
+ *
+ * A custom RuleInterface implementation may call getValue(), hasValue() and getData().
+ * Every other method is internal. See docs/public-api.md.
+ */
 final class ValidationContext
 {
     /** @var array<string, mixed> */
@@ -27,6 +33,8 @@ final class ValidationContext
     /**
      * @param array<string, mixed> $data
      * @param ErrorCollector $errors
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function __construct(array $data, ErrorCollector $errors)
     {
@@ -34,21 +42,33 @@ final class ValidationContext
         $this->errors = $errors;
     }
 
+    /**
+     * @internal Not part of the public API; see docs/public-api.md.
+     */
     public function getDatabaseValidator(): ?DatabaseValidatorInterface
     {
         return $this->databaseValidator;
     }
 
+    /**
+     * @internal Not part of the public API; see docs/public-api.md.
+     */
     public function setDatabaseValidator(?DatabaseValidatorInterface $databaseValidator): void
     {
         $this->databaseValidator = $databaseValidator;
     }
 
+    /**
+     * @internal Not part of the public API; see docs/public-api.md.
+     */
     public function getPasswordHasher(): ?PasswordHasherInterface
     {
         return $this->passwordHasher;
     }
 
+    /**
+     * @internal Not part of the public API; see docs/public-api.md.
+     */
     public function setPasswordHasher(?PasswordHasherInterface $passwordHasher): void
     {
         $this->passwordHasher = $passwordHasher;
@@ -60,6 +80,8 @@ final class ValidationContext
      * these in order, like Laravel's replaceAsterisksInParameters(). Empty outside wildcards.
      *
      * @param list<string> $keys
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function setWildcardKeys(array $keys, string $pattern = ''): void
     {
@@ -73,6 +95,8 @@ final class ValidationContext
      * the data for every element.
      *
      * @return array<string, mixed>
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function wildcardValues(string $pattern): array
     {
@@ -89,6 +113,8 @@ final class ValidationContext
 
     /**
      * The wildcard rule key being expanded ('items.*.sku'), or '' for a plain field.
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function getWildcardPattern(): string
     {
@@ -97,6 +123,8 @@ final class ValidationContext
 
     /**
      * Replace the '*' segments of a reference path with the current wildcard keys.
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function bind(string $field): string
     {
@@ -150,6 +178,8 @@ final class ValidationContext
 
     /**
      * @param array<string, mixed> $data
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function setData(array $data): void
     {
@@ -159,6 +189,8 @@ final class ValidationContext
 
     /**
      * @param array<string, mixed> $params
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function addError(string $field, string $rule, ?string $message = null, array $params = []): void
     {

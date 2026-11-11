@@ -11,6 +11,8 @@ use Vi\Validation\Execution\ValidationContext;
  *
  * Unlike `contains`, Laravel compares strictly here, so the string parameter `1` does not match
  * the integer `1` in the array.
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 #[RuleName(RuleId::DOESNT_CONTAIN)]
 final class DoesntContainRule implements RuleInterface

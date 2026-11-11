@@ -9,6 +9,8 @@ use Vi\Validation\Execution\ValidationContext;
 /**
  * Optimized fast-path implementations for common validation rules.
  * These bypass the normal rule object creation for maximum performance.
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 final class FastPathRules
 {

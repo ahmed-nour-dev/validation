@@ -23,6 +23,8 @@ use Vi\Validation\Schema\SchemaBuilder;
  * the same schema (and therefore the same fingerprint / native artifact) for the same rules.
  * It applies Laravel's "numeric context": when a field has `integer` or `numeric`, size rules
  * such as `min`/`max`/`between` compare the value numerically instead of by string length.
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 final class RuleSetCompiler
 {

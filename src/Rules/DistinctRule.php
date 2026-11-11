@@ -8,6 +8,8 @@ use Vi\Validation\Execution\ValidationContext;
 
 /**
  * When validating arrays, the field must not have any duplicate values.
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 #[RuleName(RuleId::DISTINCT)]
 final class DistinctRule implements RuleInterface

@@ -19,7 +19,11 @@ final class BatchValidationResult implements IteratorAggregate, Countable
     /** @var list<ValidationResult> */
     private array $results;
 
-    /** @param list<ValidationResult> $results */
+    /**
+     * @param list<ValidationResult> $results
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
+     */
     public function __construct(array $results)
     {
         $this->results = $results;

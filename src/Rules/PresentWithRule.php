@@ -9,6 +9,8 @@ use Vi\Validation\Execution\ValidationContext;
 /**
  * Laravel `present_with:a,b,...`: the field must be present (it may be empty) when any of the
  * other fields are present.
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 #[RuleName(RuleId::PRESENT_WITH)]
 final class PresentWithRule implements RuleInterface

@@ -28,6 +28,8 @@ final class SchemaDiagnostics
      * @param list<string> $unstableReasons
      * @param list<array{name: string, rules: list<string>, flags: list<string>, native: bool, unsupported: list<array{rule: string, reason: string}>}> $fields
      * @param list<array{field: string, rule: string, reason: string}> $unsupportedRules
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function __construct(
         public readonly string $schemaHash,

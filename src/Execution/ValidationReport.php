@@ -18,6 +18,8 @@ final class ValidationReport
     /**
      * @param list<ValidationFailure> $failures
      * @param array<string, int> $errorCountsByField
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function __construct(
         public readonly int $rowsProcessed,

@@ -8,6 +8,8 @@ use Vi\Validation\Execution\ValidationContext;
 
 /**
  * A hexadecimal color: #rgb, #rgba, #rrggbb or #rrggbbaa (Laravel `hex_color`).
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 #[RuleName(RuleId::HEX_COLOR)]
 final class HexColorRule implements RuleInterface

@@ -34,6 +34,8 @@ final class CompiledSchema
     /**
      * @param array<string, FieldDefinition> $fieldDefinitions
      * @param array<string, mixed> $rulesArray
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public static function fromFieldDefinitions(array $fieldDefinitions, array $rulesArray = []): self
     {
@@ -48,6 +50,8 @@ final class CompiledSchema
     
     /**
      * @return array<string, mixed>
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function getRulesArray(): array
     {
@@ -56,6 +60,8 @@ final class CompiledSchema
 
     /**
      * @return list<CompiledField>
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function getFields(): array
     {

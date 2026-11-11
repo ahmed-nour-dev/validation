@@ -156,6 +156,8 @@ final class ValidatorEngine
      * @param array<string, list<array{rule: string, params: array<string, mixed>, message: string|null}>> $errors
      * @return array{0: array<string, list<array{rule: string, params: array<string, mixed>, message: string|null}>>, 1: array<string, int>|null}
      *         [errors, per-field counts for ErrorMode::CountOnly (errors is then empty) or null]
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function shapeErrors(array $errors): array
     {
@@ -221,6 +223,8 @@ final class ValidatorEngine
      * it is handed to the next request/job (see StatelessValidator / ValidatorPool).
      *
      * @return array{failFast: bool, maxErrors: int, errorMode: ErrorMode, messageResolver: ?MessageResolver, databaseValidator: ?\Vi\Validation\Rules\DatabaseValidatorInterface, passwordHasher: ?\Vi\Validation\Rules\PasswordHasherInterface}
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function exportSettings(): array
     {
@@ -236,6 +240,8 @@ final class ValidatorEngine
 
     /**
      * @param array{failFast: bool, maxErrors: int, errorMode: ErrorMode, messageResolver: ?MessageResolver, databaseValidator: ?\Vi\Validation\Rules\DatabaseValidatorInterface, passwordHasher: ?\Vi\Validation\Rules\PasswordHasherInterface} $settings
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function importSettings(array $settings): void
     {

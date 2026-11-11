@@ -8,6 +8,8 @@ use Vi\Validation\Execution\ValidationContext;
 
 /**
  * The integer value must have at least :min digits (Laravel `min_digits`).
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 #[RuleName(RuleId::MIN_DIGITS)]
 final class MinDigitsRule implements RuleInterface

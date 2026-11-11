@@ -27,6 +27,8 @@ use Vi\Validation\Rules\RuleInterface;
  * declares a public `$implicit = true` property, exactly like Laravel.
  *
  * Adapted rules always run in ValidatorEngine; they never make a schema natively compilable.
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 final class LaravelRuleAdapter implements RuleInterface
 {

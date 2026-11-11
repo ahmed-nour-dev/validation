@@ -19,6 +19,8 @@ use Vi\Validation\Rules\RuleName;
  *
  * Inspection is read-only and entirely off the validation hot path. It never generates an
  * artifact and never executes one; it only looks at whether a valid artifact file exists.
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 final class SchemaInspector
 {

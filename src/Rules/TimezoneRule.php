@@ -7,6 +7,9 @@ namespace Vi\Validation\Rules;
 use DateTimeZone;
 use Vi\Validation\Execution\ValidationContext;
 
+/**
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
+ */
 #[RuleName(RuleId::TIMEZONE)]
 final class TimezoneRule implements RuleInterface
 {

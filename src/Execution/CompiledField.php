@@ -7,6 +7,9 @@ namespace Vi\Validation\Execution;
 use Vi\Validation\Rules\RuleInterface;
 use Vi\Validation\Schema\FieldDefinition;
 
+/**
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
+ */
 final class CompiledField
 {
     private string $name;

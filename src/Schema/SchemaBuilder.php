@@ -25,6 +25,8 @@ final class SchemaBuilder
 
     /**
      * @param array<string, mixed> $rules
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function setRulesArray(array $rules): void
     {

@@ -10,6 +10,8 @@ use Vi\Validation\Execution\ValidationContext;
 /**
  * The value must be one of the values found at another (wildcard) path, e.g.
  * `in_array:allowed.*` (Laravel `in_array`, loose comparison).
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 #[RuleName(RuleId::IN_ARRAY)]
 final class InArrayRule implements RuleInterface

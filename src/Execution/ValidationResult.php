@@ -25,6 +25,8 @@ final class ValidationResult
      * @param list<string> $excludedFields
      * @param array<string, int>|null $errorCounts Per-field error counts for a count-only result
      *        (ErrorMode::CountOnly), in which case $errors is empty.
+     *
+     * @internal Not part of the public API; see docs/public-api.md.
      */
     public function __construct(
         $errors,

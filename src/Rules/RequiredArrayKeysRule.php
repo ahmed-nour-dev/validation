@@ -6,6 +6,9 @@ namespace Vi\Validation\Rules;
 
 use Vi\Validation\Execution\ValidationContext;
 
+/**
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
+ */
 #[RuleName(RuleId::REQUIRED_ARRAY_KEYS)]
 final class RequiredArrayKeysRule implements RuleInterface
 {

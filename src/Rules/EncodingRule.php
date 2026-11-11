@@ -13,6 +13,8 @@ use Vi\Validation\Execution\ValidationContext;
  * Laravel throws at validation time for an encoding mbstring doesn't know; this rule throws when
  * it is built instead, so a typo such as `encoding:utf8` fails at schema-build time rather than
  * on the first row.
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 #[RuleName(RuleId::ENCODING)]
 final class EncodingRule implements RuleInterface

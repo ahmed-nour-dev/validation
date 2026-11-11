@@ -8,6 +8,8 @@ use Vi\Validation\Execution\ValidationContext;
 
 /**
  * A rule that wraps other rules and only executes them if a condition is met.
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 #[RuleName(RuleId::CONDITIONAL)]
 final class ConditionalRule implements RuleInterface

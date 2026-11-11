@@ -22,6 +22,8 @@ use Vi\Validation\Rules\UniqueRule;
  *
  * Holds per-chunk state: always pair prime() with clear(), and don't share an instance
  * between concurrent validations.
+ *
+ * @internal Not part of the public API; may change in any release. See docs/public-api.md.
  */
 final class LookupBatcher implements DatabaseValidatorInterface
 {
